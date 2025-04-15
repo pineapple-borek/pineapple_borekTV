@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PineApple TV Administration Panel</title>
+  <style>
+    body {
+      font: italic bold 16px Arial, sans-serif;
+      background-color: #1c1c1c;
+      color: #f3cc31;
+      margin: 0;
+    }
+    header {
+      background-color: #2c2c2c;
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 2px solid #444;
+    }
+    nav ul {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      list-style: none;
+      padding: 0;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+    }
+    main {
+      padding: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 0.75rem;
+      text-align: left;
+    }
+    th {
+      background-color: #333;
+    }
+    tr:nth-child(even) {
+      background-color: #2a2a2a;
+    }
+    button {
+      background-color: #d9d61d;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      margin-right: 0.5rem;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #999;
+    }
+    h2 {
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pineapple TV</h1>
+    <nav>
+      <ul>
+        <li><a href="#series">Series</a></li>
+        <li><a href="#episodes">Episodes</a></li>
+        <li><a href="#users">Users</a></li>
+        <li><a href="#addseries">Add Series</a></li>
+        <li><a href="#reports">Reports</a></li>
+        <li><a href="#settings">Settings</a></li>
+        <li><a href="#logout">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="series">
+      <h2>Dizileri Ayarla</h2>
+      <button onclick="handleNewSeries()">Yeni Eklentiler Yap</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Seasons</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Breaking Carus</td>
+            <td>Crime, Drama</td>
+            <td>5</td>
+            <td>Ongoing</td>
+            <td>
+              <button onclick="editSeries('Breaking Carus')">Edit</button>
+              <button onclick="deleteSeries('Breaking Carus')">Delete</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Midnight Mass</td>
+            <td>Thriller, Horror</td>
+            <td>1</td>
+            <td>Ongoing</td>
+            <td>
+              <button onclick="editSeries('Midnight Mass')">Edit</button>
+              <button onclick="deleteSeries('Midnight Mass')">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="episodes">
+      <h2>Manage Episodes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Series</th>
+            <th>Season</th>
+            <th>Episode</th>
+            <th>Title</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Breaking Carus</td>
+            <td>2</td>
+            <td>3</td>
+            <td>Binary Search Tree</td>
+            <td>
+              <button onclick="editEpisode('Binary Search Tree')">Edit</button>
+              <button onclick="deleteEpisode('Binary Search Tree')">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="users">
+      <h2>Kullanıcıları Yönet</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Kullanıcı İsmi</th>
+            <th>Email</th>
+            <th>Kayıtlı</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>joyouspineappleuser2435</td>
+            <td>evenflow@example.com</td>
+            <td>3-17-2025</td>
+            <td>
+              <button onclick="viewUser('joyouspineappleuser2435')">View</button>
+              <button onclick="banUser('joyouspineappleuser2435')">Ban</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="addseries">
+      <h2>Yeni Dizi Ekle</h2>
+      <button onclick="addSeries()">Add Series</button>
+    </section>
+
+    <section id="reports">
+      <h2>Reports & Analytics</h2>
+      <p>Show statistics like active users, most-watched series, user growth, etc.</p>
+      <button onclick="downloadReport()">Download Report</button>
+    </section>
+
+    <section id="settings">
+      <h2>System Settings</h2>
+      <p>Adjust system configurations, maintenance options, and preferences.</p>
+      <button onclick="updateSettings()">Update Config</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Pineapple TV Administration</p>
+    <p>&copy; All rights NOT reserved.</p>
+  </footer>
+
+  <script>
+    function handleNewSeries() {
+      alert('Yeni eklentiler özelliği hazırlanmakta');
+    }
+
+    function editSeries(name) {
+      alert(`Editing series: ${name}`);
+    }
+
+    function deleteSeries(name) {
+      if (confirm(`Delete series: ${name}?`)) {
+        alert(`${name} deleted.`);
+      }
+    }
+
+    function editEpisode(title) {
+      alert(`Editing episode: ${title}`);
+    }
+
+    function deleteEpisode(title) {
+      if (confirm(`Delete episode: ${title}?`)) {
+        alert(`${title} deleted.`);
+      }
+    }
+
+    function viewUser(username) {
+      alert(`Viewing user: ${username}`);
+    }
+
+    function banUser(username) {
+      if (confirm(`Ban user: ${username}?`)) {
+        alert(`${username} has been banned.`);
+      }
+    }
+
+    function addSeries() {
+      alert('Redirecting to add series form');
+    }
+
+    function downloadReport() {
+      alert('Downloading report');
+    }
+
+    function updateSettings() {
+      alert('System settings updated.');
+    }
+  </script>
+</body>
+</html>
