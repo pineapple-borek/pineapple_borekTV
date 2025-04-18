@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Pineapple TV</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #e0f2f1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            font-size: 1.5em;
+            font-weight: bold;
+            background-color: #facc15; /* Pineapple yellow */
+            color: #166534; /* Pineapple green */
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-links a {
+            font-size: 0.6em;
+            margin-left: 20px;
+            color: #166534; /* Pineapple green */
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 100px);
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        form input, form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+
+        form button {
+            background-color: #166534;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #14532d;
+        }
+
+        p {
+            text-align: center;
+        }
+
+        a {
+            color: #166534;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .flash-messages {
+            position: absolute;
+            top: 90px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .flash {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px auto;
+            border-radius: 5px;
+        }
+
+        .flash.success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .flash.error {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .flash.info {
+            background-color: #17a2b8;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>Pineapple TV</div>
+        <div class="nav-links">
+            {% if session['user'] %}
+                Merhaba, {{ session['user'] }} |
+                <a href="{{ url_for('index') }}">Ana Sayfa</a>
+                <a href="{{ url_for('logout') }}">Çıkış Yap</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Giriş Yap</a>
+                <a href="{{ url_for('register') }}">Kayıt Ol</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        // Flash mesajlarını 3 saniye sonra gizle
+        setTimeout(() => {
+            const flashMessages = document.querySelector('.flash-messages');
+            if (flashMessages) {
+                flashMessages.style.display = 'none';
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
