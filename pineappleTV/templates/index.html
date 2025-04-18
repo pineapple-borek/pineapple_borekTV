@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <!-- Flash Mesajlarını Göster -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Hoşgeldiniz mesajı -->
+    <h2>Hoşgeldiniz, {{ session['user'] }}!</h2>
+
+    <!-- Kategoriler: Diziler ve Filmler -->
+    <div class="categories">
+        <h3>Seçenekler</h3>
+        <ul>
+            <li><a href="{{ url_for('videos', category='diziler') }}">Diziler</a></li>
+            <li><a href="{{ url_for('videos', category='filmler') }}">Filmler</a></li>
+        </ul>
+    </div>
+{% endblock %}

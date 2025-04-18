@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h2>Videoyu İzle: {{ video_name }}</h2></br>
+    <video width="640" height="360" controls>
+        <source src="{{ url_for('stream_video', filename=category ~ '/' ~ video_name) }}" type="video/mp4">
+        Tarayıcınız video etiketini desteklemiyor.
+    </video>
+    <br>
+    <a href="{{ url_for('index') }}">← Geri Dön</a>
+{% endblock %}

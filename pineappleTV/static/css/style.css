@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #111;
+    color: #fff;
+}
+
+h1, h2 {
+    color: #e50914;
+}
+
+a {
+    color: #00bcd4;
+    text-decoration: none;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+}
+
+input, button {
+    margin: 5px 0;
+    padding: 10px;
+}
+
+video {
+    border: 2px solid #e50914;
+}
+
+/* style.css dosyasına ekleyin */
+
+header {
+    text-align: center; /* Header içindeki tüm metni ortalar */
+}
+
+h1 {
+    font-size: 2.5em; /* Başlığın boyutunu büyütür, ihtiyaca göre ayarlayabilirsiniz */
+}
+
+p {
+    font-size: 1.2em; /* Hoş geldin mesajının font boyutunu ayarlayabilirsiniz */
+    margin-top: 10px; /* Biraz boşluk bırakır */
+}
+

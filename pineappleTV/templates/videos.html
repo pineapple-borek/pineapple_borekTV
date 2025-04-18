@@ -1,0 +1,11 @@
+{% extends "layout.html" %} {% block content %}
+<h2>Videolar</h2>
+<div class="video-list">
+  {% for vid in videos %}
+
+  <div class="video-item">
+    <a href="{{ url_for('video', category=category, name=vid) }}">{{ vid }}</a><br />
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
