@@ -10,6 +10,9 @@
         <input type="email" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Şifre" required>
         <input type="password" name="confirm_password" placeholder="Şifreyi Onayla" required>
+        <!-- bu kısım -->
+        <label for="card_info">Kart Bilgileri (göstermelik)</label>
+        <input type="text" id="card_info" name="card_info" placeholder="Kart bilgilerini girin" required>
         <button type="submit">Kayıt Ol</button>
     </form>
     <p>Zaten hesabın var mı? <a href="{{ url_for('login') }}">Giriş Yap</a></p>
