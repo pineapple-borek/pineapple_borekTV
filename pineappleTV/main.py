@@ -140,9 +140,9 @@ def videos(category):
         return redirect(url_for('login'))
 
     if category == 'diziler':
-        video_path = 'static/videos/diziler'
+        video_path = 'pineappleTV/static/videos/diziler'
     elif category == 'filmler':
-        video_path = 'static/videos/filmler'
+        video_path = 'pineappleTV/static/videos/filmler'
     else:
         flash('Geçersiz kategori.', 'error')
         return redirect(url_for('index'))
