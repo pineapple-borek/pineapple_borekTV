@@ -8,24 +8,37 @@
             height: 100%;
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #e0f2f1; /* Alt zemin */
+            background-color: #e0f2f1;
         }
 
         header {
-            text-align: center;
-            padding: 30px 0;
-            font-size: 2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            font-size: 1.5em;
             font-weight: bold;
-            background-color: #facc15; /* Ananas sarısı */
-            color: #166534; /* Ananas yeşili */
+            background-color: #facc15; /* Pineapple yellow */
+            color: #166534; /* Pineapple green */
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-links a {
+            font-size: 0.6em;
+            margin-left: 20px;
+            color: #166534; /* Pineapple green */
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
         }
 
         main {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: calc(100vh - 100px); /* header yüksekliği kadar düş */
+            min-height: calc(100vh - 100px);
             padding: 20px;
         }
 
@@ -71,16 +84,19 @@
             text-decoration: underline;
         }
 
-        /* Flash mesajları için stil */
         .flash-messages {
-            margin-bottom: 20px;
+            position: absolute;
+            top: 90px;
+            left: 0;
+            width: 100%;
+            text-align: center;
         }
 
         .flash {
-            padding: 10px;
-            margin-bottom: 10px;
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px auto;
             border-radius: 5px;
-            text-align: center;
         }
 
         .flash.success {
@@ -101,23 +117,41 @@
 </head>
 <body>
     <header>
-        Pineapple TV
+        <div>Pineapple TV</div>
+        <div class="nav-links">
+            {% if session['user'] %}
+                Merhaba, {{ session['user'] }} |
+                <a href="{{ url_for('index') }}">Ana Sayfa</a>
+                <a href="{{ url_for('logout') }}">Çıkış Yap</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Giriş Yap</a>
+                <a href="{{ url_for('register') }}">Kayıt Ol</a>
+            {% endif %}
+        </div>
     </header>
-    <main>
-        <!-- Flash Mesajları Gösterme -->
+
+    <div class="flash-messages">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
             {% endif %}
         {% endwith %}
+    </div>
 
+    <main>
         {% block content %}{% endblock %}
     </main>
+
+    <script>
+        // Flash mesajlarını 3 saniye sonra gizle
+        setTimeout(() => {
+            const flashMessages = document.querySelector('.flash-messages');
+            if (flashMessages) {
+                flashMessages.style.display = 'none';
+            }
+        }, 3000);
+    </script>
 </body>
 </html>
