@@ -133,7 +133,24 @@ def logout():
     session.pop('user', None)
     flash('Çıkış başarılı.', 'info')
     return redirect(url_for('login'))
-
+@app.route('/shows/<category>')
+def shows(category):
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    if category == 'diziler':
+        shows_path = 'pineappleTV/static/videos/diziler'
+    elif category == 'filmler':
+        shows_path = 'pineappleTV/static/videos/filmler'
+    else:
+        flash('Geçersiz kategori.', 'error')
+        return redirect(url_for('index'))
+    try:
+        shows = [f for f in os.listdir(shows_path)]
+        show_list = [{'name': f, 'thumbnail':'thumbnail.jpg'} for f in shows]
+        
+    except FileNotFoundError:
+        show_list = []
+    return render_template('shows.html', category=category, shows=show_list)
 @app.route('/videos/<category>')
 def videos(category):
     if 'user' not in session:

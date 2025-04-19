@@ -1,21 +1,16 @@
-{% extends "layout.html" %}
-
-{% block content %}
+{%extends "layout.html" %}
+    {% block content %}
     <h1>{{ category.capitalize() }}</h1>
     
     <div class="video-list">
-        {% for video in videos %}
+        {% for show in shows %}
             <div class="video-item">
-                <a href="{{ url_for('video', name=category + '/' + video.name) }}">
-                    
-                    <p>{{ video.name }}</p>
+                <a href="{{ url_for('videos', category=category + '/' + show.name) }}">
+                    <img src="../static/videos/filmler/Flash/thumbnail.jpg">
+                    <p>{{ show.name }}</p>
                 </a>
                 
-                <!-- Favorilere Ekle Butonu -->
-                <form action="{{ url_for('add_to_favorites') }}" method="POST">
-                    <input type="hidden" name="video_name" value="{{ video.name }}">
-                    <button type="submit" class="add-to-favorites-btn">Favorilere Ekle</button>
-                </form>
+                                
             </div>
         {% endfor %}
     </div>
@@ -54,4 +49,4 @@
             background-color: #2980b9;
         }
     </style>
-{% endblock %}
+    {% endblock %}
