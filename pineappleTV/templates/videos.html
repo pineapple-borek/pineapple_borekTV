@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <h1>{{ category.capitalize() }}</h1>
+    
     
     <div class="video-list">
         {% for video in videos %}
             <div class="video-item">
-                <a href="{{ url_for('video', name=category + '/' + video.name) }}">
-                    
+                <a href="{{ url_for('video', name=category+'/'+ video.name) }}">
+                    <img src="{{url_for('static',filename='/videos/'+category+'/thumbnail.jpg/')}}" alt="{{ video.name }}">   
                     <p>{{ video.name }}</p>
                 </a>
                 
