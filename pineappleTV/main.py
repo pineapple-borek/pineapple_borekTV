@@ -133,27 +133,47 @@ def logout():
     session.pop('user', None)
     flash('Çıkış başarılı.', 'info')
     return redirect(url_for('login'))
+@app.route('/shows/<category>')
+def shows(category):
+    # Kullanıcı giriş yapmadıysa login sayfasına yönlendiriyoruz
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    #secilen kategoriye göre şovların pathini degistiriyoruz
+    if category == 'diziler':
+        shows_path = 'pineappleTV/static/videos/diziler'
+    elif category == 'filmler':
+        shows_path = 'pineappleTV/static/videos/filmler'
+    else:
+        # Geçersiz kategori durumunda hata mesajı gösteriyoruz
+        flash('Geçersiz kategori.', 'error')
+        return redirect(url_for('index'))
+    try:
+        # Seçilen kategoriye ait şovların listesini alıyoruz
+        #sectigimiz kategoriye göre shows_pathi degistiriyoruz
+        #shows_path in içindeki şovların dosyalarının isimleriyle bir liste oluşturuyoruz
+        shows = [f for f in os.listdir(shows_path)]
+        #şov isimlerini ve thumbnail isimlerini anahtarlara atayoruz
+        show_list = [{'name': f, 'thumbnail':'thumbnail.jpg'} for f in shows]
+        
+    except FileNotFoundError:
+        show_list = []
+    return render_template('shows.html', category=category, shows=show_list)
 
-@app.route('/videos/<category>')
+@app.route('/videos/<path:category>')
 def videos(category):
     if 'user' not in session:
         return redirect(url_for('login'))
 
-    if category == 'diziler':
-        video_path = 'pineappleTV/static/videos/diziler'
-    elif category == 'filmler':
-        video_path = 'pineappleTV/static/videos/filmler'
-    else:
-        flash('Geçersiz kategori.', 'error')
-        return redirect(url_for('index'))
-
+    video_path = 'pineappleTV/static/videos/'+'/'+category
+    
+    
     try:
         videos = [f for f in os.listdir(video_path) if f.endswith('.mp4')]
-        video_list = [{'name': f, 'thumbnail': f.rsplit('.', 1)[0] + '.jpg'} for f in videos]
+        video_list = [{'name': f, 'thumbnail':'thumbnail.jpg'} for f in videos]
     except FileNotFoundError:
         video_list = []
 
-    return render_template('videos.html', category=category, videos=video_list)
+    return render_template('videos.html', category=category,videos=video_list)
 
 # Video izleme sayfası
 @app.route('/video/<path:name>')
