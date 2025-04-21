@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 
-<link rel = "stylesheet" href = "pineappleTV\static\css\style.css">
+
 
 {% extends "layout.html" %}
 
 {% block content %}
     <!-- Header Bölümü -->
     <header>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
         <div class="logo">
             <h1>PineApple TV</h1>
         </div>
@@ -29,6 +31,7 @@
         <a href="{{ url_for('shows', category='filmler') }}" class="main-button">Filmler</a>
     </div>
 
+<!--     
     <style>
         /* Define CSS variables */
         :root {
@@ -120,4 +123,5 @@
             margin-top: 60px;
         }
     </style>
+    -->
 {% endblock %}

@@ -2,11 +2,11 @@
 
 /* Ana renk paleti */
 :root {
-    --primary-color: #ff6600;  /* Ana renk */
-    --secondary-color: #003366; /* İkinci renk */
-    --background-color: #f4f4f4; /* Arka plan rengi */
+    --primary-color: #f9db6d;  /* Ana renk */
+    --secondary-color: #464d77; /* İkinci renk */
+    --background-color: #f4eded; /* Arka plan rengi */
     --text-color: #333333; /* Yazı rengi */
-    --highlight-color: #ffcc00; /* Vurgulu renk */
+    --highlight-color: #ccb359; /* Vurgulu renk */
 }
 
 body {

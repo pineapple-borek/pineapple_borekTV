@@ -51,7 +51,7 @@ def redirect_to_main():
 @app.route('/main_page')
 def index():
     if 'user' not in session:
-        return redirect(url_for('login'))
+        return redireset(url_for('login'))
 
     username = session['user']
     conn = get_db_connection()
