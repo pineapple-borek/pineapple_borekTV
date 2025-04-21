@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <title>Pineapple TV</title>
     <style>
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
             font-family: Arial, sans-serif;
@@ -18,15 +20,18 @@
             padding: 20px 40px;
             font-size: 1.5em;
             font-weight: bold;
-            background-color: #facc15; /* Pineapple yellow */
-            color: #166534; /* Pineapple green */
+            background-color: #facc15;
+            /* Pineapple yellow */
+            color: #166534;
+            /* Pineapple green */
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
         .nav-links a {
             font-size: 0.6em;
             margin-left: 20px;
-            color: #166534; /* Pineapple green */
+            color: #166534;
+            /* Pineapple green */
             text-decoration: none;
         }
 
@@ -34,13 +39,13 @@
             text-decoration: underline;
         }
 
-        /* main {
+        main {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: calc(100vh - 100px);
             padding: 20px;
-        } */
+        }
 
         .container {
             width: 100%;
@@ -51,7 +56,8 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
-        form input, form button {
+        form input,
+        form button {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
@@ -113,30 +119,55 @@
             background-color: #17a2b8;
             color: white;
         }
+
+        .left-content {
+            flex: 1;
+            text-align: left;
+            margin-top: 2%;
+        }
+
+        .center-logo {
+            flex: 1;
+            text-align: center;
+            margin-top: 1%;
+            max-height: 150px;
+        }
+
+        .nav-links {
+            flex: 1;
+            text-align: right;
+            margin-top: 2%;
+        }
     </style>
 </head>
+
 <body>
     <header>
-        <div>Pineapple TV</div>
+        <div class="left-content">
+            <h1>Pineapple TV</h1>
+        </div>
+        <div class="center-logo">
+            <img src="{{ url_for('static', filename='pineapple_logo.png') }}" alt="Logo" class="logo-image">
+        </div>
         <div class="nav-links">
             {% if session['user'] %}
-                Merhaba, {{ session['user'] }} |
-                <a href="{{ url_for('index') }}">Ana Sayfa</a>
-                <a href="{{ url_for('logout') }}">Çıkış Yap</a>
+            Merhaba, {{ session['user'] }} |
+            <a href="{{ url_for('index') }}">Ana Sayfa</a>
+            <a href="{{ url_for('logout') }}">Çıkış Yap</a>
             {% else %}
-                <a href="{{ url_for('login') }}">Giriş Yap</a>
-                <a href="{{ url_for('register') }}">Kayıt Ol</a>
+            <a href="{{ url_for('login') }}">Giriş Yap</a>
+            <a href="{{ url_for('register') }}">Kayıt Ol</a>
             {% endif %}
         </div>
     </header>
 
     <div class="flash-messages">
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
         {% endwith %}
     </div>
 
@@ -154,4 +185,5 @@
         }, 3000);
     </script>
 </body>
+
 </html>

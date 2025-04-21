@@ -25,16 +25,35 @@ body {
 header {
     background-color: var(--primary-color);
     color: white;
-    text-align: center;
-    /* padding: 20px; */
     width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
+    height: 120px; /* yüksekliği sabit tut */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    position: relative;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.left-content,
+.right-content {
+    z-index: 1;
+    flex: 1;
+}
+
+.center-logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.logo-image {
+    height: 80px;
+    width: auto;
 }
 
 header .logo h1 {

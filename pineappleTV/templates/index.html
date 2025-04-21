@@ -3,31 +3,39 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <!-- Header Bölümü -->
-    <header>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<!-- Header Bölümü -->
+ <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+ </head>
+<!-- <header>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-        <div class="logo">
-            <h1>PineApple TV</h1>
-        </div>
-        <div class="user-info">
-            <p>Merhaba, {{ session['user'] }}</p>
-            <p><strong>Üyelik Bitiş Tarihi:</strong> {{ subscription_end_date }}</p>
-            <p><strong>Favoriler:</strong></p>
-            <ul>
-                {% for favorite in favorites %}
-                    <li>{{ favorite }}</li>
-                {% endfor %}
-            </ul>
-            <a href="{{ url_for('logout') }}">Çıkış Yap</a>
-        </div>
-    </header>
-
-    <!-- Ana Butonlar (Diziler ve Filmler) -->
-    <div class="button-container">
-        <a href="{{ url_for('shows', category='diziler') }}" class="main-button">Diziler</a>
-        <a href="{{ url_for('shows', category='filmler') }}" class="main-button">Filmler</a>
+    <div class="left-content">
+        <h1>Pineapple TV</h1>
     </div>
+
+    <div class="center-logo">
+        <img src="{{ url_for('static', filename='pineapple_logo.png') }}" alt="Logo" class="logo-image">
+    </div>
+
+    <div class="right-content">
+        <p>Merhaba, {{ session['user'] }}</p>
+        <p><strong>Üyelik Bitiş Tarihi:</strong> {{ subscription_end_date }}</p>
+        <p><strong>Favoriler:</strong></p>
+        <ul>
+            {% for favorite in favorites %}
+                <li>{{ favorite }}</li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('logout') }}">Çıkış Yap</a>
+    </div>
+</header> -->
+
+<!-- Ana Butonlar (Diziler ve Filmler) -->
+<div class="button-container">
+    <a href="{{ url_for('shows', category='diziler') }}" class="main-button">Diziler</a>
+    <a href="{{ url_for('shows', category='filmler') }}" class="main-button">Filmler</a>
+</div>
 
 <!--     
     <style>
