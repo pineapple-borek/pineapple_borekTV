@@ -7,6 +7,7 @@
     --background-color: #f4eded; /* Arka plan rengi */
     --text-color: #333333; /* Yazı rengi */
     --highlight-color: #ccb359; /* Vurgulu renk */
+    --button-color: #36827f; /* Buton rengi */
 }
 
 body {
@@ -25,7 +26,7 @@ header {
     background-color: var(--primary-color);
     color: white;
     text-align: center;
-    padding: 20px;
+    /* padding: 20px; */
     width: 100%;
     position: absolute;
     top: 0;
@@ -86,7 +87,7 @@ button {
     width: 100%;
     padding: 10px;
     background-color: var(--primary-color);
-    color: white;
+    color: #ffffff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -133,3 +134,68 @@ button:hover {
     font-size: 18px;
     color: #555;
 }
+
+/* Genel form stili */
+.container {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 30px;
+    background-color: #fff7f7;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Başlık */
+.container h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* LOGIN SAYFASI STILLERI */
+/* =============================================================== */
+/* Giriş inputları */
+.container input[type="text"],
+.container input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+/* Giriş butonu */
+.container button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #36827f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.container button[type="submit"]:hover {
+    background-color: #255958;
+}
+
+/* Kayıt ol linki */
+.container p {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #555;
+}
+
+.container a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.container a:hover {
+    text-decoration: underline;
+}
+
