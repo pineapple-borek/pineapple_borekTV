@@ -2,21 +2,26 @@ from flask import Flask, render_template, request, redirect, session, url_for, s
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 import os
+from init_db import DatabaseInitializer
+from init_db import db_initializer
+
+
 
 app = Flask(__name__)
 app.secret_key = "PineAppleTV"
 
 # Veritabanı bağlantısı
 def get_db_connection():
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    db_path = os.path.join(BASE_DIR, 'db', 'user.db')
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row
+    conn = db_initializer.connect()
     return conn
 
 # Veritabanı şemasını güncelle
-def update_db_schema():
-    conn = get_db_connection()
+def check_db():
+    if __name__ == "__main__":
+        
+        db_initializer.initialize_database()
+    
+    conn = db_initializer.connect()
     cursor = conn.cursor()
 
     # Eğer subscription_end_date, email ve card_info sütunları yoksa, yeni sütun ekliyoruz
@@ -41,7 +46,7 @@ def update_db_schema():
     conn.close()
 
 # Uygulama başlatılmadan önce veritabanı şemasını güncelliyoruz
-update_db_schema()
+check_db()
 
 # "/" adresi login sayfasına yönlendirilsin
 @app.route('/')

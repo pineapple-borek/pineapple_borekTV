@@ -1,6 +1,7 @@
 .venv/
 *.mp4
 *.pyc
+*.db
 __pycache__/
 
 instance/
