@@ -39,6 +39,29 @@
             justify-content: center;
             margin-top: 50px;
         }
+        .comments-list {
+        list-style-type: none; /* Noktaları kaldır */
+        padding: 0;
+        margin: 0;
+        }
+
+        .comment-item {
+            margin-bottom: 15px; /* Yorumlar arasında boşluk */
+        }
+
+        .comment-box {
+            background-color: #f9f9f9; /* Açık gri arka plan */
+            border: 1px solid #ddd; /* İnce kenarlık */
+            border-radius: 8px; /* Kenarları yuvarla */
+            padding: 10px 15px; /* İçerik boşluğu */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hafif gölge */
+            font-size: 16px; /* Yazı boyutu */
+            color: #333; /* Yazı rengi */
+        }
+
+        .comment-box strong {
+            color: #3498db; /* Kullanıcı adı rengi */
+        }
     </style>
 
     <div class="video-container">
@@ -69,6 +92,12 @@
                     <li class="list-group-item">
                         <div class="comment-box">
                             <strong>{{ comment.username }}</strong>: {{ comment.text }}
+                            <!-- kullanıcının kendi yorumunu silmesi için buton -->
+                            {% if comment.username == session['user'] %}
+                            <form method="POST" action="{{ url_for('delete_comment', comment_id=comment.id) }}">
+                                <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                            </form>
+                        {% endif %}
                         </div>
                     </li>
                 {% endfor %}

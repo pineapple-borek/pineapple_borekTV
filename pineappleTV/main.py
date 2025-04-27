@@ -193,7 +193,7 @@ def video(name):
         conn.commit()
 
     # Videoya ait yorumları getir
-    cursor.execute('SELECT username, text FROM comments WHERE video_name = ? ORDER BY id DESC', (name,))
+    cursor.execute('SELECT id, username, text FROM comments WHERE video_name = ? ORDER BY id DESC', (name,))
     comments = cursor.fetchall()
 
     # Yorum sayısını hesapla
@@ -208,6 +208,22 @@ def video(name):
 def stream_video(filename):
     video_folder = os.path.join('static', 'videos')
     return send_from_directory(video_folder, filename)
+
+@app.route('/delete_comment/<int:comment_id>', methods=['POST'])
+def delete_comment(comment_id):
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Yorumu sil
+    cursor.execute('DELETE FROM comments WHERE id = ?', (comment_id,))
+    conn.commit()
+    conn.close()
+
+    flash('Yorum başarıyla silindi.', 'success')
+    return redirect(request.referrer)
 
 @app.route('/add_to_favorites', methods=['POST'])
 def add_to_favorites():
