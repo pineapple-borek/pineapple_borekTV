@@ -176,11 +176,32 @@ def videos(category):
     return render_template('videos.html', category=category,videos=video_list)
 
 # Video izleme sayfası
-@app.route('/video/<path:name>')
+@app.route('/video/<path:name>', methods=['GET', 'POST'])
 def video(name):
     if 'user' not in session:
         return redirect(url_for('login'))
-    return render_template('video.html', video_name=name)
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Eğer POST isteği varsa, yeni bir yorum ekle
+    if request.method == 'POST':
+        username = session['user']
+        comment_text = request.form['comment']
+        cursor.execute('INSERT INTO comments (video_name, username, text) VALUES (?, ?, ?)', 
+                       (name, username, comment_text))
+        conn.commit()
+
+    # Videoya ait yorumları getir
+    cursor.execute('SELECT username, text FROM comments WHERE video_name = ? ORDER BY id DESC', (name,))
+    comments = cursor.fetchall()
+
+    # Yorum sayısını hesapla
+    comment_count = len(comments)
+
+    conn.close()
+
+    return render_template('video.html', video_name=name, comments=comments, comment_count=comment_count)
 
 # Videoları akışa sunma
 @app.route('/videos/stream/<path:filename>')
@@ -234,3 +255,4 @@ create_favorites_table()
 
 if __name__ == '__main__':
     app.run(debug=True)
+    

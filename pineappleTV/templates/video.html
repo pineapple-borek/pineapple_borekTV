@@ -31,9 +31,18 @@
         .back-link:hover {
             text-decoration: underline;
         }
+
+        .comments-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px;
+        }
     </style>
 
     <div class="video-container">
+
         <!-- Video başlığı -->
         <div class="video-title">{{ video_name.split('/')[-1] }}</div>
 
@@ -42,8 +51,30 @@
             <source src="{{ url_for('stream_video', filename=video_name) }}" type="video/mp4">
             Tarayıcınız video etiketini desteklemiyor.
         </video>
-
-        <!-- Geri dönüş -->
-        <a class="back-link" href="{{ url_for('index') }}">← Ana Sayfaya Dön</a>
+        <div class="comments-container" style="margin-top: 50px; text-align: center;">
+            <!-- kullanıcı yorum arayüzü -->
+                <!-- yorum sayacı -->
+                <div style="margin-bottom: 20px; font-size: 18px; color: #333;">Toplam Yorum Sayısı: {{ comment_count }}
+                </div>
+                <!-- yorum ekleme formu -->
+                <form method="POST" action="{{ url_for('video', name=video_name) }}">
+                    <textarea name="comment" id="comment" rows="4" cols="50" placeholder="Yorumunuzu buraya yazın..."></textarea><br>
+                    <div align="center">
+                        <button type="submit" class="button">onayla</button>
+                    </div>
+                </form>
+            <!-- tüm yorumlar -->
+            <ul class="list-group list-group-flush" id="comments">
+                {% for comment in comments %}
+                    <li class="list-group-item">
+                        <div class="comment-box">
+                            <strong>{{ comment.username }}</strong>: {{ comment.text }}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
+
+
 {% endblock %}
