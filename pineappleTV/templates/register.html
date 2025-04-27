@@ -1,22 +1,8 @@
 <!-- register.html -->
 
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <link rel="stylesheet" href="pineappleTV\static\css\style.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kayıt Ol | PineAppleTV</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
-
-<body>
-
-    <header>
-        <h1>PineAppleTV</h1>
-    </header>
-
+{% extends "layout.html" %}
+    {% block content %}
     <div class="container">
         <h2>Kayıt Ol</h2>
 
@@ -50,7 +36,4 @@
             <button type="submit">Kayıt Ol</button>
         </form>
     </div>
-
-</body>
-
-</html>
+    {% endblock %}
