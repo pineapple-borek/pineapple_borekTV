@@ -16,10 +16,8 @@ def get_db_connection():
     return conn
 
 # Veritabanı şemasını güncelle
-def check_db():
-    if __name__ == "__main__":
-        
-        db_initializer.initialize_database()
+def check_db():    
+    db_initializer.initialize_database()
     
     conn = db_initializer.connect()
     cursor = conn.cursor()
