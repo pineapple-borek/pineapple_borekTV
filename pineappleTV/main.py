@@ -45,8 +45,7 @@ def check_db():
     
     conn.close()
 
-# Uygulama başlatılmadan önce veritabanı şemasını güncelliyoruz
-check_db()
+
 
 # "/" adresi login sayfasına yönlendirilsin
 @app.route('/')
@@ -256,24 +255,9 @@ def add_to_favorites():
 
     return redirect(request.referrer)
 
-def create_favorites_table():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS favorites (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT,
-            video_name TEXT
-        )
-    ''')
-
-    conn.commit()
-    conn.close()
-
-# Uygulama başlatılmadan önce tabloyu oluşturuyoruz
-create_favorites_table()
 
 if __name__ == '__main__':
+    # Uygulama başlatılmadan önce veritabanı şemasını kontrol ediyoruz 
+    check_db()
     app.run(debug=True)
     

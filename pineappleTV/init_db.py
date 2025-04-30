@@ -55,7 +55,17 @@ class DatabaseInitializer:
                 video_name TEXT
             )
         ''')
-
+    
+    
+        #favori tablosu oluşturma
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS favorites (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT,
+                video_name TEXT
+            )
+        ''')
+    
     def initialize_database(self):
         self.create_db_directory()
         self.connect()
