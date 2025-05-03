@@ -1,7 +1,62 @@
 {% extends "layout.html" %}
-
 {% block content %}
+<div class="main-content">
+    <div class="video-container">
+        <div class="video-title">{{ video_name.split('/')[-1] }}</div>
+        <video width="800" height="450" controls>
+            <source src="{{ url_for('stream_video', filename=video_name) }}" type="video/mp4">
+            Tarayıcınız video etiketini desteklemiyor.
+        </video>
+    </div>
+    <div class="comments-container">
+        <div style="margin-bottom: 20px; font-size: 18px; color: #333;">
+            Toplam Yorum Sayısı: {{ comment_count }}
+        </div>
+        <form method="POST" action="{{ url_for('video', name=video_name) }}">
+            <textarea name="comment" id="comment" rows="4" cols="50" placeholder="Yorumunuzu buraya yazın..."></textarea><br>
+            <div align="center">
+                <button type="submit" class="button">onayla</button>
+            </div>
+        </form>
+        <ul class="comments-list" id="comments">
+            {% for comment in comments %}
+                <li class="comment-item">
+                    <div class="comment-box">
+                        <strong>{{ comment.username }}</strong>: {{ comment.text }}
+                        {% if comment.username == session['user'] %}
+                        <form method="POST" action="{{ url_for('delete_comment', comment_id=comment.id) }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <a href="javascript:history.back()" class="back-button">← Geri</a>
+</div>
+
+
+
 <style>
+        .back-button {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        padding: 10px 15px;
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        z-index: 1000; 
+    }
+
+    .back-button:hover {
+        background-color: #c0392b;
+    }
     .main-content {
         display: flex;
         flex-direction: column;
@@ -67,39 +122,5 @@
 }
 </style>
 
-<div class="main-content">
-    <div class="video-container">
-        <div class="video-title">{{ video_name.split('/')[-1] }}</div>
-        <video width="800" height="450" controls>
-            <source src="{{ url_for('stream_video', filename=video_name) }}" type="video/mp4">
-            Tarayıcınız video etiketini desteklemiyor.
-        </video>
-    </div>
-    <div class="comments-container">
-        <div style="margin-bottom: 20px; font-size: 18px; color: #333;">
-            Toplam Yorum Sayısı: {{ comment_count }}
-        </div>
-        <form method="POST" action="{{ url_for('video', name=video_name) }}">
-            <textarea name="comment" id="comment" rows="4" cols="50" placeholder="Yorumunuzu buraya yazın..."></textarea><br>
-            <div align="center">
-                <button type="submit" class="button">onayla</button>
-            </div>
-        </form>
-        <ul class="comments-list" id="comments">
-            {% for comment in comments %}
-                <li class="comment-item">
-                    <div class="comment-box">
-                        <strong>{{ comment.username }}</strong>: {{ comment.text }}
-                        {% if comment.username == session['user'] %}
-                        <form method="POST" action="{{ url_for('delete_comment', comment_id=comment.id) }}">
-                            <button type="submit" class="btn btn-danger btn-sm">Sil</button>
-                        </form>
-                        {% endif %}
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
 
 {% endblock %}
