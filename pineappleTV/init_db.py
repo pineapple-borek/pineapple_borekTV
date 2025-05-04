@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash
 import os
 
 class DatabaseInitializer:
+    #database dizininin adresini alıyor ve yoksa .db dosyası açıyor. (yapıcı)
     def __init__(self):
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
         self.db_dir = os.path.join(self.base_dir, 'db')
@@ -11,20 +12,20 @@ class DatabaseInitializer:
 
     def create_db_directory(self):
         os.makedirs(self.db_dir, exist_ok=True)
-
+    #db ye bağlanma
     def connect(self):
         self.conn = sqlite3.connect(self.db_path)
         self.conn.row_factory = sqlite3.Row
         return self.conn
-
+    #bağlantıyı kapama
     def close_connection(self):
         if self.conn:
             self.conn.close()
-
+    #yoksa tabloları kuruyor
     def create_tables(self):
         cursor = self.conn.cursor()
 
-        # Create users table
+        # Kullanıcı kayıt olurken alının bütün bilgiler buraya kayıt ediliyor
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,7 +37,7 @@ class DatabaseInitializer:
             )
         ''')
 
-        # Create comments table
+        #yorumlar için gereken tablo
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS comments (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,7 +48,7 @@ class DatabaseInitializer:
             )
         ''')
 
-        # Create favorites table
+        # favoriler için gereken tablo
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS favorites (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,7 +66,7 @@ class DatabaseInitializer:
                 video_name TEXT
             )
         ''')
-    
+    #adım adım ayrılmış fonksiyonların beraber bulunduğu fonksiyon. factory patterne benziyor metoduna biraz benziyor
     def initialize_database(self):
         self.create_db_directory()
         self.connect()
