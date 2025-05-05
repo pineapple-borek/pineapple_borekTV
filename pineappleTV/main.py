@@ -77,6 +77,10 @@ def index():
 # Kullanıcı girişi
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    # Eğer kullanıcı zaten giriş yaptıysa ana sayfaya yönlendir
+    if 'user' in session:
+        return redirect(url_for('index'))
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -96,6 +100,7 @@ def login():
             return redirect(url_for('login'))
 
     return render_template('login.html')
+
 
 # Kullanıcı kaydı
 @app.route('/register', methods=['GET', 'POST'])
