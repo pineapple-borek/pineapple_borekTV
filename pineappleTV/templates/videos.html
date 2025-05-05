@@ -9,7 +9,7 @@
             <div class="video-item">
                 <a href="{{ url_for('video', name=category+'/'+ video.name) }}">
                     <img src="{{url_for('static',filename='/videos/'+category+'/thumbnail.jpg/')}}" alt="{{ video.name }}">   
-                    <p>{{ video.name }}</p>
+                    <p>{{ video.name[0:-3]+" Bölüm" }}</p>
                 </a>
                 
                 <!-- Favorilere Ekle Butonu -->

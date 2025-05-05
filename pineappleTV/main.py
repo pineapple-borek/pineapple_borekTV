@@ -185,6 +185,7 @@ def videos(category):
 # Video izleme sayfası
 @app.route('/video/<path:name>', methods=['GET', 'POST'])
 def video(name):
+    #video dosya isimleri 1.mp4, 2.mp4 gibi isimlendirilmelidir.
     if 'user' not in session:
         return redirect(url_for('login'))
 
