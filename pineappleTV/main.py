@@ -77,10 +77,6 @@ def index():
 # Kullanıcı girişi
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # Eğer kullanıcı zaten giriş yaptıysa ana sayfaya yönlendir
-    if 'user' in session:
-        return redirect(url_for('index'))
-
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -100,7 +96,6 @@ def login():
             return redirect(url_for('login'))
 
     return render_template('login.html')
-
 
 # Kullanıcı kaydı
 @app.route('/register', methods=['GET', 'POST'])
@@ -257,65 +252,6 @@ def add_to_favorites():
     conn.close()
 
     return redirect(request.referrer)
-
-
-@app.route('/favorite')
-def favorite():
-    if 'user' not in session:
-        return redirect(url_for('login'))
-
-    username = session['user']
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT video_name FROM favorites WHERE username = ?', (username,))
-    favorite_videos = cursor.fetchall()
-    conn.close()
-
-    favorite_list = [row['video_name'] for row in favorite_videos]
-    return render_template('favorite.html', favorite=favorite_list)
-
-
-@app.route('/remove_favorite/<video_name>', methods=['POST'])
-def remove_favorite(video_name):
-    if 'user' not in session:
-        return redirect(url_for('login'))
-
-    username = session['user']
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM favorites WHERE username = ? AND video_name = ?', (username, video_name))
-    conn.commit()
-    conn.close()
-    flash(f'"{video_name}" favorilerden kaldırıldı.', 'success')
-    return redirect(url_for('favorite'))
-
-@app.route('/search')
-def search():
-    if 'user' not in session:
-        return redirect(url_for('login'))
-
-    query = request.args.get('query', '').lower()
-    search_path = os.path.join('pineappleTV', 'static', 'videos')
-
-    results = []
-    try:
-        for filename in os.listdir(search_path):
-            if query in filename.lower() and filename.endswith('.mp4'):
-                base_filename = os.path.splitext(filename)[0]
-                
-                # mp4 ile jpg nin isminin aynı olıp olmadığına bakıyor
-                thumbnail_filename = base_filename + '.jpg'
-                thumbnail_path = os.path.join(search_path, thumbnail_filename)
-                thumbnail = thumbnail_filename
-                
-                results.append({
-                    'name': filename,
-                    'thumbnail': thumbnail
-                })
-    except FileNotFoundError:
-        pass
-
-    return render_template('search_results.html', query=query, results=results)
 
 
 if __name__ == '__main__':
