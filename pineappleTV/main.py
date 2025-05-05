@@ -22,7 +22,7 @@ def check_db():
     conn = db_initializer.connect()
     cursor = conn.cursor()
 
-    # Eğer subscription_end_date, email ve card_info sütunları yoksa, yeni sütun ekliyoruz.
+    # Eğer subscription_end_date, email ve card_info sütunları yoksa, yeni sütun ekliyoruz
     cursor.execute('PRAGMA table_info(users)')
     columns = [column[1] for column in cursor.fetchall()]
 
