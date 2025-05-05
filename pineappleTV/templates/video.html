@@ -8,6 +8,10 @@
             Tarayıcınız video etiketini desteklemiyor.
         </video>
     </div>
+    <div class="navigation-buttons">
+        <a href="{{ url_for('video', name=previous_video) category=category }}" class="button" {% if not previous_video %}style="display:none;"{% endif %}>Önceki Bölüm</a>
+        <a href="{{ url_for('video', name=next_video) }}" class="button" {% if not next_video %}style="display:none;"{% endif %}>Sonraki Bölüm</a>
+    </div>
     <div class="comments-container">
         <div style="margin-bottom: 20px; font-size: 18px; color: #333;">
             Toplam Yorum Sayısı: {{ comment_count }}
@@ -61,6 +65,26 @@
         margin-bottom: 30px;
         border-radius: 16px;
         box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.4);
+    }
+    .navigation-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        width: 800px;
+    }
+
+    .navigation-buttons .button {
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .navigation-buttons .button:hover {
+        background-color: #2980b9;
     }
     .comments-container {
         width: 800px;
