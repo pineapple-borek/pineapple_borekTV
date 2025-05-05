@@ -7,6 +7,12 @@
  <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
  </head>
+  <!-- Arama Çubuğu -->
+<div class="search-container">
+    <form>
+        <input type="text" id="search-bar" placeholder="When life gives you lemons eat pineapple...">
+    </form>
+</div>
 <!-- <header>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
@@ -35,6 +41,7 @@
 <div class="button-container">
     <a href="{{ url_for('shows', category='diziler') }}" class="main-button">Diziler</a>
     <a href="{{ url_for('shows', category='filmler') }}" class="main-button">Filmler</a>
+    <a href="{{ url_for('favorite') }}" class="main-button">Favoriler</a>
 </div>
 
 <!--     
@@ -130,7 +137,5 @@
         }
     </style>
     -->
-    <form class="search-container">
-        <input type="text" id="search-bar" placeholder="When life gives you lemons eat pineapple...">
-    </form>
+
 {% endblock %}

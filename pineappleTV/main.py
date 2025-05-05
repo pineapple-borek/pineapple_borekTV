@@ -254,6 +254,37 @@ def add_to_favorites():
     return redirect(request.referrer)
 
 
+@app.route('/favorite')
+def favorite():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    username = session['user']
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT video_name FROM favorites WHERE username = ?', (username,))
+    favorite_videos = cursor.fetchall()
+    conn.close()
+
+    favorite_list = [row['video_name'] for row in favorite_videos]
+    return render_template('favorite.html', favorite=favorite_list)
+
+
+@app.route('/remove_favorite/<video_name>', methods=['POST'])
+def remove_favorite(video_name):
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    username = session['user']
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM favorites WHERE username = ? AND video_name = ?', (username, video_name))
+    conn.commit()
+    conn.close()
+    flash(f'"{video_name}" favorilerden kaldırıldı.', 'success')
+    return redirect(url_for('favorite'))
+
+
 if __name__ == '__main__':
     # Uygulama başlatılmadan önce veritabanı şemasını kontrol ediyoruz 
     check_db()
