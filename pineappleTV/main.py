@@ -289,6 +289,34 @@ def remove_favorite(video_name):
     flash(f'"{video_name}" favorilerden kaldırıldı.', 'success')
     return redirect(url_for('favorite'))
 
+@app.route('/search')
+def search():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    query = request.args.get('query', '').lower()
+    search_path = os.path.join('pineappleTV', 'static', 'videos')
+
+    results = []
+    try:
+        for filename in os.listdir(search_path):
+            if query in filename.lower() and filename.endswith('.mp4'):
+                base_filename = os.path.splitext(filename)[0]
+                
+                # mp4 ile jpg nin isminin aynı olıp olmadığına bakıyor
+                thumbnail_filename = base_filename + '.jpg'
+                thumbnail_path = os.path.join(search_path, thumbnail_filename)
+                thumbnail = thumbnail_filename
+                
+                results.append({
+                    'name': filename,
+                    'thumbnail': thumbnail
+                })
+    except FileNotFoundError:
+        pass
+
+    return render_template('search_results.html', query=query, results=results)
+
 
 if __name__ == '__main__':
     # Uygulama başlatılmadan önce veritabanı şemasını kontrol ediyoruz 

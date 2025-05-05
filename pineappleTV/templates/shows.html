@@ -6,8 +6,7 @@
         {% for show in shows %}
             <div class="video-item">
                 <a href="{{ url_for('videos', category=category+'/'+show.name ) }}">
-                    <img src="{{url_for('static',filename='/videos/'+category+'/'+show.name+'/thumbnail.jpg/')}}" alt="{{ show.name }}">
-                   
+                    <img src="{{ url_for('static', filename='videos/' + category + '/' + show.name + '/thumbnail.jpg') }}" alt="{{ show.name }}"> 
                     <p>{{ show.name }}</p>
                 </a>
                 
@@ -24,16 +23,13 @@
             justify-content: space-around;
         }
         
-        .video-item {
-            margin: 20px;
-            text-align: center;
-            width: 200px;
-        }
-        
         .video-item img {
             width: 100%;
             height: auto;
             border-radius: 8px;
+            margin: 20px;
+            text-align: center;
+            width: 200px;
         }
         
         .add-to-favorites-btn {

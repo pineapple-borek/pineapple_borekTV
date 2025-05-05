@@ -6,8 +6,12 @@
     <div class="video-list">
         {% if favorite %}
             {% for video in favorite %}
+                {% set thumbnail = video.replace('.mp4', '.jpg') %}
                 <div class="video-item">
-                    <a href="{{ url_for('video', name=video) }}" class="video-link">{{ video }}</a>
+                    <a href="{{ url_for('video', name=video) }}" class="video-link">
+                        <img src="{{ url_for('static', filename='videos/' + thumbnail) }}" alt="{{ video }}" class="thumbnail">
+                        {{ video }}
+                    </a>
                     <form action="{{ url_for('remove_favorite', video_name=video) }}" method="POST">
                         <button type="submit" class="remove-favorite-btn">Favorilerden Kaldır</button>
                     </form>
@@ -19,90 +23,5 @@
     </div>
     <a href="javascript:history.back()" class="back-button">← Geri</a>
 </div>
+
 {% endblock %}
-
-{% block video %}
-<video width="320" height="240" controls class="video-player">
-    <source src="{{ url_for('static', filename=video_name) }}" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
-{% endblock %}
-
-<style>
-    .main-content {
-        padding: 40px 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .title {
-        font-size: 28px;
-        font-weight: 600;
-        margin-bottom: 30px;
-        color: #2c3e50;
-    }
-
-    .video-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 30px;
-        justify-content: center;
-        width: 100%;
-    }
-
-    .video-item {
-        background-color: #f9f9f9;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        width: 220px;
-        text-align: center;
-        transition: transform 0.3s ease;
-    }
-
-    .video-item:hover {
-        transform: translateY(-5px);
-    }
-
-    .video-link {
-        font-weight: 500;
-        color: #3498db;
-        text-decoration: none;
-        display: block;
-        margin-bottom: 12px;
-        font-size: 16px;
-    }
-
-    .video-link:hover {
-        text-decoration: underline;
-    }
-
-    .remove-favorite-btn {
-        background-color: #e74c3c;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 8px 12px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        font-size: 14px;
-    }
-
-    .remove-favorite-btn:hover {
-        background-color: #c0392b;
-    }
-
-
-    .no-favorites {
-        font-size: 16px;
-        color: #7f8c8d;
-        margin-top: 20px;
-    }
-
-    .video-player {
-        margin-top: 40px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-</style>

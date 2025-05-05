@@ -9,10 +9,12 @@
  </head>
   <!-- Arama Çubuğu -->
 <div class="search-container">
-    <form>
-        <input type="text" id="search-bar" placeholder="When life gives you lemons eat pineapple...">
+    <form action="{{ url_for('search') }}" method="GET">
+        <input type="text" id="search-bar" name="query" placeholder="When life gives you lemons eat pineapple...">
+        <button type="submit">Ara</button>
     </form>
 </div>
+
 <!-- <header>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 

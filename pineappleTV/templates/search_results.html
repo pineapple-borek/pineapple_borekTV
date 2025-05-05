@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="main-content">
+    <h2 class="title">"{{ query }}" için arama sonuçları</h2>
+
+    {% if results %}
+        <div class="video-list">
+            {% for video in results %}
+                {% set thumbnail = video.name.replace('.mp4', '.jpg') %}
+                <div class="video-item">
+                    <a href="{{ url_for('video', name=video.name) }}" class="video-link">
+                        <img src="{{ url_for('static', filename='videos/' + thumbnail) }}"
+                             alt="{{ video.name }}" class="thumbnail">
+                        {{ video.name }}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="no-favorites">Sonuç bulunamadı.</p>
+    {% endif %}
+
+    <a href="javascript:history.back()" class="back-button">← Geri</a>
+</div>
+
+{% endblock %}
