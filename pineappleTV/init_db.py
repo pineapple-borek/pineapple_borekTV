@@ -48,6 +48,18 @@ class DatabaseInitializer:
             )
         ''')
 
+        #videoların beğenisi için gereken tablo
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS likes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL,
+                video_name TEXT NOT NULL,
+                state INTEGER DEFAULT 1, -- 1: Beğenildi, 0: Beğeni kaldırıldı
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(username, video_name) -- Aynı kullanıcı aynı videoyu birden fazla kez beğenemez
+            )
+        ''')
+
         # favoriler için gereken tablo
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS favorites (
