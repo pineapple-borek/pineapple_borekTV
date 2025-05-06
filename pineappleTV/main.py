@@ -189,6 +189,39 @@ def video(name):
     if 'user' not in session:
         return redirect(url_for('login'))
 
+    # Extract directory and filename
+    video_dir_relative = os.path.dirname(name) # e.g., diziler/Flash
+    video_filename = os.path.basename(name) # e.g., 1.mp4
+    video_dir_absolute = os.path.join('pineappleTV', 'static', 'videos', video_dir_relative) # Absolute path to the directory
+
+    prev_video = None
+    next_video = None
+
+    try:
+        # List all mp4 files in the directory
+        all_videos = sorted(
+            [f for f in os.listdir(video_dir_absolute) if f.endswith('.mp4')],
+            key=lambda x: int(os.path.splitext(x)[0]) # Sort numerically based on filename (e.g., 1, 2, 10)
+        )
+
+        # Find the index of the current video
+        current_index = all_videos.index(video_filename)
+
+        # Determine previous video
+        if current_index > 0:
+            prev_filename = all_videos[current_index - 1]
+            prev_video = os.path.join(video_dir_relative, prev_filename).replace('\\', '/') # Use relative path for URL
+
+        # Determine next video
+        if current_index < len(all_videos) - 1:
+            next_filename = all_videos[current_index + 1]
+            next_video = os.path.join(video_dir_relative, next_filename).replace('\\', '/') # Use relative path for URL
+
+    except (FileNotFoundError, ValueError, IndexError) as e:
+        # Handle cases where directory doesn't exist, filename isn't numeric, or video not found
+        print(f"Error finding next/prev video: {e}")
+        pass # Keep prev_video and next_video as None
+
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -209,7 +242,7 @@ def video(name):
 
     conn.close()
 
-    return render_template('video.html', video_name=name, comments=comments, comment_count=comment_count)
+    return render_template('video.html', video_name=name, comments=comments, comment_count=comment_count, prev_video=prev_video, next_video=next_video)
 
 # Videoları akışa sunma
 @app.route('/videos/stream/<path:filename>')
@@ -323,4 +356,3 @@ if __name__ == '__main__':
     # Uygulama başlatılmadan önce veritabanı şemasını kontrol ediyoruz 
     check_db()
     app.run(debug=True)
-    

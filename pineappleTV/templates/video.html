@@ -7,6 +7,19 @@
             <source src="{{ url_for('stream_video', filename=video_name) }}" type="video/mp4">
             Tarayıcınız video etiketini desteklemiyor.
         </video>
+        <div class="navigation-buttons">
+            {% if prev_video %}
+                <a href="{{ url_for('video', name=prev_video) }}" class="nav-button prev-button">← Önceki Bölüm</a>
+            {% else %}
+                <a href="#" class="nav-button prev-button" style="visibility: hidden;">← Önceki Bölüm</a>
+            {% endif %}
+
+            {% if next_video %}
+                <a href="{{ url_for('video', name=next_video) }}" class="nav-button next-button">Sonraki Bölüm →</a>
+            {% else %}
+                <a href="#" class="nav-button prev-button" style="visibility: hidden;">← Sonraki Bölüm</a>
+            {% endif %}
+        </div>
     </div>
     <div class="comments-container">
         <div style="margin-bottom: 20px; font-size: 18px; color: #333;">
@@ -50,6 +63,8 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        position: relative; /* Added for button positioning */
+        margin-bottom: 20px; /* Add some space below video area */
     }
     .video-title {
         font-size: 24px;
@@ -102,6 +117,35 @@
     -ms-overflow-style: none;  /* IE ve Edge */
     scrollbar-width: none;     /* Firefox */
 }
+    .navigation-buttons {
+        display: flex;
+        justify-content: space-between; /* önceki ve sonraki butonları zıt yönlere iter */
+        width: 800px; 
+        margin-top: 15px; 
+    }
+    /*buton rengi*/
+    .nav-button {
+        padding: 10px 20px;
+        background-color: #36827F; /*button arkaplan rengi*/
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .nav-button:hover {
+        background-color: #4ca9a5; /* hover ederken daha açık renk*/
+    }
+
+    .prev-button {
+        /* gerekirse */
+    }
+
+    .next-button {
+        /* gerekirse */
+    }
 </style>
 
 

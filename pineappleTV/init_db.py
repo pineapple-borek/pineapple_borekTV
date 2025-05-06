@@ -1,7 +1,7 @@
 import sqlite3
 from werkzeug.security import generate_password_hash
 import os
-
+#builder design patterne göre bir sınıf
 class DatabaseInitializer:
     #database dizininin adresini alıyor ve yoksa .db dosyası açıyor. (yapıcı)
     def __init__(self):
@@ -66,7 +66,7 @@ class DatabaseInitializer:
                 video_name TEXT
             )
         ''')
-    #adım adım ayrılmış fonksiyonların beraber bulunduğu fonksiyon. factory patterne benziyor metoduna biraz benziyor
+    #adım adım ayrılmış fonksiyonların beraber bulunduğu fonksiyon. Bir nevi builder metodu
     def initialize_database(self):
         self.create_db_directory()
         self.connect()
