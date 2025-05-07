@@ -33,26 +33,20 @@ body::before {
 
 header {
     
-    
     background-color: var(--primary-color);
     color: white;
     width: 100%;
-    height: 100px; /* yüksekliği sabit tut */
+    height: 120px; /* yüksekliği sabit tut */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position:fixed;
-    top: 0;
-    bottom: 30;
-    padding: 0px 40px 20px 40px;
+    position:relative;
+    /* padding: 0 20px; */
+    padding: 20px 40px;
     font-size: 1.5em;
     font-weight: bold;
     box-sizing: border-box;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 25;
-    
-    margin-top: 0px;
-    float:inline-start;
 }
 
 .left-content,
@@ -72,7 +66,6 @@ header {
 }
 
 .logo-image {
-    padding-bottom: 25px;
     height: 80px;
     width: auto;
 }
@@ -352,8 +345,6 @@ input#search-bar:focus::placeholder {
 
 /* Video Listesi */
 .video-list {
-    top: 52%;
-    position: relative;
     display: flex;
     flex-wrap: wrap;
     gap: 30px;
@@ -378,11 +369,11 @@ input#search-bar:focus::placeholder {
 
 
 .thumbnail {
-    max-width: 75%;
-    object-fit:cover;
-
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .video-link {
