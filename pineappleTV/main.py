@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, url_for, send_from_directory, flash
 from werkzeug.security import check_password_hash, generate_password_hash
-import sqlite3
 import os
-from init_db import DatabaseInitializer
 from init_db import db_initializer
 
 
