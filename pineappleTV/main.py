@@ -242,7 +242,13 @@ def video(name):
     comment_count = len(comments)
     conn.close()
 
-    return render_template('video.html', video_name=name, comments=comments, comment_count=comment_count, prev_video=prev_video, next_video=next_video)
+    # Kullanıcının beğenip beğenmediğini kontrol et
+    username = session['user']
+    is_liked = is_video_liked(username, name)
+    like_count = get_like_count(name)
+
+
+    return render_template('video.html', video_name=name, comments=comments, comment_count=comment_count, prev_video=prev_video, next_video=next_video,like_count=like_count,is_liked=is_liked)
 
 # Videoları akışa sunma
 @app.route('/videos/stream/<path:filename>')
@@ -350,8 +356,81 @@ def search():
 
     return render_template('search_results.html', query=query, results=results)
 
+# kullanıcı beğenme tuşu
+@app.route('/like_video', methods=['POST'])
+def like_video():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    username = session['user']
+    video_name = request.form['video_name']
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Beğeni ekle veya güncelle
+    cursor.execute('''
+        INSERT INTO likes (username, video_name, state)
+        VALUES (?, ?, 1)
+        ON CONFLICT(username, video_name)
+        DO UPDATE SET state = 1
+    ''', (username, video_name))
+    conn.commit()
+    conn.close()
+
+    flash(f'{video_name} beğenildi!', 'success')
+    return redirect(request.referrer)
+
+# kullanıcı beğenme tuşu kaldırma
+@app.route('/unlike_video', methods=['POST'])
+def unlike_video():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    username = session['user']
+    video_name = request.form['video_name']
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Beğeniyi kaldır
+    cursor.execute('''
+        UPDATE likes
+        SET state = 0
+        WHERE username = ? AND video_name = ?
+    ''', (username, video_name))
+    conn.commit()
+    conn.close()
+
+    flash(f'{video_name} beğeni kaldırıldı!', 'info')
+    return redirect(request.referrer)
+
+#beğeni kontrol
+def is_video_liked(username, video_name):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT state FROM likes
+        WHERE username = ? AND video_name = ?
+    ''', (username, video_name))
+    result = cursor.fetchone()
+    conn.close()
+    return result and result['state'] == 1
+
+# beğeni sayısını gösterme
+def get_like_count(video_name):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT COUNT(*) as like_count FROM likes
+        WHERE video_name = ? AND state = 1
+    ''', (video_name,))
+    result = cursor.fetchone()
+    conn.close()
+    return result['like_count']
 
 if __name__ == '__main__':
     # Uygulama başlatılmadan önce veritabanı şemasını kontrol ediyoruz 
     check_db()
     app.run(debug=True)
+

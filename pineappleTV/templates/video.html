@@ -21,6 +21,18 @@
             {% endif %}
         </div>
     </div>
+    <div>
+        <form action="{{ url_for('like_video') }}" method="POST">
+            <input type="hidden" name="video_name" value="{{ video_name }}">
+            <button type="submit" class="like-button">Beğen</button>
+        </form>
+        
+        <form action="{{ url_for('unlike_video') }}" method="POST">
+            <input type="hidden" name="video_name" value="{{ video_name }}">
+            <button type="submit" class="unlike-button">Beğeniyi Kaldır</button>
+        </form>
+        <p>{{ like_count }} kişi bu videoyu beğendi.</p>
+    </div>
     <div class="comments-container">
         <div style="margin-bottom: 20px; font-size: 18px; color: #333;">
             Toplam Yorum Sayısı: {{ comment_count }}
