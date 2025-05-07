@@ -240,15 +240,15 @@ def video(name):
 
     # Yorum sayısını hesapla
     comment_count = len(comments)
-    conn.close()
 
     # Kullanıcının beğenip beğenmediğini kontrol et
     username = session['user']
-    is_liked = is_video_liked(username, name)
     like_count = get_like_count(name)
+    dislike_count = get_dislike_count(name)
+    
+    conn.close()
 
-
-    return render_template('video.html', video_name=name, comments=comments, comment_count=comment_count, prev_video=prev_video, next_video=next_video,like_count=like_count,is_liked=is_liked)
+    return render_template('video.html', video_name=name, comments=comments, comment_count=comment_count, prev_video=prev_video, next_video=next_video,like_count=like_count,dislike_count=dislike_count)
 
 # Videoları akışa sunma
 @app.route('/videos/stream/<path:filename>')
@@ -357,13 +357,14 @@ def search():
     return render_template('search_results.html', query=query, results=results)
 
 # kullanıcı beğenme tuşu
-@app.route('/toggle_like', methods=['POST'])
-def toggle_like():
+@app.route('/toggle_like_dislike', methods=['POST'])
+def toggle_like_dislike():
     if 'user' not in session:
         return redirect(url_for('login'))
 
     username = session['user']
     video_name = request.form['video_name']
+    action = request.form['action']  # "like" veya "dislike"
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -375,40 +376,67 @@ def toggle_like():
     ''', (username, video_name))
     result = cursor.fetchone()
 
-    if result and result['state'] == 1:
-        # Beğeniyi kaldır
-        cursor.execute('''
-            UPDATE likes
-            SET state = 0
-            WHERE username = ? AND video_name = ?
-        ''', (username, video_name))
-        flash(f'{video_name} beğeni kaldırıldı!', 'info')
-    else:
-        # Beğeniyi ekle veya güncelle
-        cursor.execute('''
-            INSERT INTO likes (username, video_name, state)
-            VALUES (?, ?, 1)
-            ON CONFLICT(username, video_name)
-            DO UPDATE SET state = 1
-        ''', (username, video_name))
-        flash(f'{video_name} beğenildi!', 'success')
+    if action == "like":
+        if result and result['state'] == 1:
+            # Beğeniyi kaldır
+            cursor.execute('''
+                UPDATE likes
+                SET state = 0
+                WHERE username = ? AND video_name = ?
+            ''', (username, video_name))
+        else:
+            # Beğeniyi ekle veya güncelle
+            cursor.execute('''
+                INSERT INTO likes (username, video_name, state)
+                VALUES (?, ?, 1)
+                ON CONFLICT(username, video_name)
+                DO UPDATE SET state = 1
+            ''', (username, video_name))
+    elif action == "dislike":
+        if result and result['state'] == -1:
+            # Dislike'ı kaldır
+            cursor.execute('''
+                UPDATE likes
+                SET state = 0
+                WHERE username = ? AND video_name = ?
+            ''', (username, video_name))
+        else:
+            # Dislike'ı ekle veya güncelle
+            cursor.execute('''
+                INSERT INTO likes (username, video_name, state)
+                VALUES (?, ?, -1)
+                ON CONFLICT(username, video_name)
+                DO UPDATE SET state = -1
+            ''', (username, video_name))
 
     conn.commit()
     conn.close()
 
     return redirect(request.referrer)
 
-#beğeni kontrol
-def is_video_liked(username, video_name):
+#like kontrol
+def get_like_count(video_name):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT state FROM likes
-        WHERE username = ? AND video_name = ?
-    ''', (username, video_name))
+        SELECT COUNT(*) as like_count FROM likes
+        WHERE video_name = ? AND state = 1
+    ''', (video_name,))
     result = cursor.fetchone()
     conn.close()
-    return result and result['state'] == 1
+    return result['like_count']
+
+#dislike kontrol
+def get_dislike_count(video_name):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT COUNT(*) as dislike_count FROM likes
+        WHERE video_name = ? AND state = -1
+    ''', (video_name,))
+    result = cursor.fetchone()
+    conn.close()
+    return result['dislike_count']
 
 # beğeni sayısını gösterme
 def get_like_count(video_name):
@@ -421,6 +449,8 @@ def get_like_count(video_name):
     result = cursor.fetchone()
     conn.close()
     return result['like_count']
+
+
 
 if __name__ == '__main__':
     # Uygulama başlatılmadan önce veritabanı şemasını kontrol ediyoruz 

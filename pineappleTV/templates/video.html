@@ -21,16 +21,21 @@
             {% endif %}
         </div>
     </div>
-    <div>
-        <form action="{{ url_for('toggle_like') }}" method="POST">
+    <div class="like-dislike-container">
+        <form action="{{ url_for('toggle_like_dislike') }}" method="POST" style="display: inline;">
             <input type="hidden" name="video_name" value="{{ video_name }}">
-            {% if is_liked %}
-                <button type="submit" class="like-button">Beğeniyi Kaldır</button>
-            {% else %}
-                <button type="submit" class="like-button">Beğen</button>
-            {% endif %}
+            <input type="hidden" name="action" value="like">
+            <button type="submit" class="like-button">
+                👍 {{ like_count }}
+            </button>
         </form>
-        <p>{{ like_count }} kişi bu videoyu beğendi.</p>
+        <form action="{{ url_for('toggle_like_dislike') }}" method="POST" style="display: inline;">
+            <input type="hidden" name="video_name" value="{{ video_name }}">
+            <input type="hidden" name="action" value="dislike">
+            <button type="submit" class="dislike-button">
+                👎 {{ dislike_count }}
+            </button>
+        </form>
     </div>
     <div class="comments-container">
         <div style="margin-bottom: 20px; font-size: 18px; color: #333;">
