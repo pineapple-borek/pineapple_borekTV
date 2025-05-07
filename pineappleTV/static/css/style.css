@@ -32,6 +32,7 @@ body::before {
 }
 
 header {
+    
     background-color: var(--primary-color);
     color: white;
     width: 100%;
@@ -39,7 +40,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
+    position:relative;
     /* padding: 0 20px; */
     padding: 20px 40px;
     font-size: 1.5em;
