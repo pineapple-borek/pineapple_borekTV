@@ -240,7 +240,6 @@ def video(name):
 
     # Yorum sayısını hesapla
     comment_count = len(comments)
-
     conn.close()
 
     return render_template('video.html', video_name=name, comments=comments, comment_count=comment_count, prev_video=prev_video, next_video=next_video)
