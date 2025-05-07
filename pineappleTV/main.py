@@ -357,8 +357,8 @@ def search():
     return render_template('search_results.html', query=query, results=results)
 
 # kullanıcı beğenme tuşu
-@app.route('/like_video', methods=['POST'])
-def like_video():
+@app.route('/toggle_like', methods=['POST'])
+def toggle_like():
     if 'user' not in session:
         return redirect(url_for('login'))
 
@@ -368,41 +368,34 @@ def like_video():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Beğeni ekle veya güncelle
+    # Kullanıcının mevcut beğeni durumunu kontrol et
     cursor.execute('''
-        INSERT INTO likes (username, video_name, state)
-        VALUES (?, ?, 1)
-        ON CONFLICT(username, video_name)
-        DO UPDATE SET state = 1
-    ''', (username, video_name))
-    conn.commit()
-    conn.close()
-
-    flash(f'{video_name} beğenildi!', 'success')
-    return redirect(request.referrer)
-
-# kullanıcı beğenme tuşu kaldırma
-@app.route('/unlike_video', methods=['POST'])
-def unlike_video():
-    if 'user' not in session:
-        return redirect(url_for('login'))
-
-    username = session['user']
-    video_name = request.form['video_name']
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    # Beğeniyi kaldır
-    cursor.execute('''
-        UPDATE likes
-        SET state = 0
+        SELECT state FROM likes
         WHERE username = ? AND video_name = ?
     ''', (username, video_name))
+    result = cursor.fetchone()
+
+    if result and result['state'] == 1:
+        # Beğeniyi kaldır
+        cursor.execute('''
+            UPDATE likes
+            SET state = 0
+            WHERE username = ? AND video_name = ?
+        ''', (username, video_name))
+        flash(f'{video_name} beğeni kaldırıldı!', 'info')
+    else:
+        # Beğeniyi ekle veya güncelle
+        cursor.execute('''
+            INSERT INTO likes (username, video_name, state)
+            VALUES (?, ?, 1)
+            ON CONFLICT(username, video_name)
+            DO UPDATE SET state = 1
+        ''', (username, video_name))
+        flash(f'{video_name} beğenildi!', 'success')
+
     conn.commit()
     conn.close()
 
-    flash(f'{video_name} beğeni kaldırıldı!', 'info')
     return redirect(request.referrer)
 
 #beğeni kontrol

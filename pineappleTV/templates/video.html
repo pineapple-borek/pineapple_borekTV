@@ -22,14 +22,13 @@
         </div>
     </div>
     <div>
-        <form action="{{ url_for('like_video') }}" method="POST">
+        <form action="{{ url_for('toggle_like') }}" method="POST">
             <input type="hidden" name="video_name" value="{{ video_name }}">
-            <button type="submit" class="like-button">Beğen</button>
-        </form>
-        
-        <form action="{{ url_for('unlike_video') }}" method="POST">
-            <input type="hidden" name="video_name" value="{{ video_name }}">
-            <button type="submit" class="unlike-button">Beğeniyi Kaldır</button>
+            {% if is_liked %}
+                <button type="submit" class="like-button">Beğeniyi Kaldır</button>
+            {% else %}
+                <button type="submit" class="like-button">Beğen</button>
+            {% endif %}
         </form>
         <p>{{ like_count }} kişi bu videoyu beğendi.</p>
     </div>
