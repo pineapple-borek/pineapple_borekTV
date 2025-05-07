@@ -1,31 +1,32 @@
 {%extends "layout.html" %}
     {% block content %}
-    <h1>{{ category.capitalize() }}</h1>
-    
+    <h1 class="show-category">{{ category.capitalize() }}</h1>
+    </br>
     <div class="video-list">
         {% for show in shows %}
             <div class="video-item">
+            </br>
                 <a href="{{ url_for('videos', category=category+'/'+show.name ) }}">
-                    <img src="{{ url_for('static', filename='videos/' + category + '/' + show.name + '/thumbnail.jpg') }}" alt="{{ show.name }}"> 
+                    <img src="{{ url_for('static', filename='videos/' + category + '/' + show.name + '/thumbnail.jpg') }}" alt="{{ show.name }}" class = "thumbnail"> 
                     <p>{{ show.name }}</p>
                 </a>
                 
                                 
             </div>
         {% endfor %}
-        <a href="javascript:history.back()" class="back-button">← Geri</a> <!-- button -->
+        
     </div>
 
     <style>
-        .video-list {
+        /* .video-list {
             display: flex;
             flex-wrap: wrap;
          justify-content: flex-start;
             gap: 20px;
          padding: 20px;
-        }
+        } */
 
-        .video-item {
+        /* .video-item {
         width: 200px;
         text-align: center;
         }
@@ -33,8 +34,8 @@
         .video-item img {
             width: 100%;
             height: auto;
-            border-radius: 8px;
-    }
+            border-radius: 8px; *
+    }*/
 
         
         .add-to-favorites-btn {
