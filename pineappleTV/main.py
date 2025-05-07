@@ -3,8 +3,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 import os
 import modules
-from pineappleTV.modules import DatabaseInitializer
-from pineappleTV.modules import db_initializer
+from modules import DatabaseInitializer
+from modules import db_initializer
 
 
 
