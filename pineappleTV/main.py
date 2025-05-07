@@ -308,7 +308,6 @@ def favorite():
     favorite_list = [row['video_name'] for row in favorite_videos]
     return render_template('favorite.html', favorite=favorite_list)
 
-
 @app.route('/remove_favorite/<video_name>', methods=['POST'])
 def remove_favorite(video_name):
     if 'user' not in session:
