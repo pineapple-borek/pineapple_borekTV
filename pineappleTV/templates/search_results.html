@@ -3,14 +3,14 @@
 
 <div class="main-content">
     <h2 class="title">"{{ query }}" için arama sonuçları</h2>
-
+    <p>{{thumbnail}}</p>
     {% if results %}
         <div class="video-list">
             {% for video in results %}
                 {% set thumbnail = video.name.replace('.mp4', '.jpg') %}
                 <div class="video-item">
                     <a href="{{ url_for('video', name=video.name) }}" class="video-link">
-                        <img src="{{ url_for('static', filename='videos/' + thumbnail) }}"
+                        <img src="{{ url_for('static', filename='videos' + thumbnail) }}"
                              alt="{{ video.name }}" class="thumbnail">
                         {{ video.name }}
                     </a>
