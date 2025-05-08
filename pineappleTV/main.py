@@ -340,13 +340,11 @@ def search():
                 continue
             for item in os.listdir(category_path):
                 item_path = os.path.join(category_path, item)
-                # Only search in directories (shows/movies folders)
                 if os.path.isdir(item_path) and query in item.lower():
-                    thumbnail_filename = 'thumbnail.jpg'
-                    thumbnail_path = os.path.join(item_path, thumbnail_filename)
-                    # For HTML, thumbnail path should be relative to 'static'
-                    if os.path.exists(thumbnail_path):
-                        thumbnail = f'videos/{category}/{item}/thumbnail.jpg'
+                    thumbnail_rel_path = f'videos/{category}/{item}/thumbnail.jpg'
+                    thumbnail_abs_path = os.path.join('pineappleTV', 'static', thumbnail_rel_path)
+                    if os.path.exists(thumbnail_abs_path):
+                        thumbnail = url_for('static', filename=thumbnail_rel_path)
                     else:
                         thumbnail = None
                     results.append({
@@ -358,6 +356,7 @@ def search():
         pass
 
     return render_template('search_results.html', query=query, results=results)
+
 
 # kullanıcı beğenme tuşu
 @app.route('/toggle_like_dislike', methods=['POST'])
