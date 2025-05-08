@@ -6,15 +6,16 @@
 
     {% if results %}
         <div class="video-list">
-            {% for video in results %}
+            {% for result in results %}
                 <div class="video-item">
-                    <a href="{{ url_for('video', name=video.name) }}" class="video-link">
-                        {% if video.thumbnail %}
-                            <img src="{{ video.thumbnail }}" alt="{{ video.name }}" class="thumbnail">
+                    <a href="{{ url_for('videos', category=result.category ~ '/' ~ result.name) }}" class="video-link">
+                        {% if result.thumbnail %}
+                            <img src="{{ result.thumbnail }}" alt="{{ result.name }}" class="thumbnail">
                         {% else %}
                             <div class="no-thumbnail">Görsel yok</div>
                         {% endif %}
-                        <div class="video-title">{{ video.name }}</div>
+                        <div class="video-title">{{ result.name }}</div>
+                        <div class="video-category">{{ result.category|capitalize }}</div>
                     </a>
                 </div>
             {% endfor %}
@@ -22,8 +23,6 @@
     {% else %}
         <p class="no-favorites">Sonuç bulunamadı.</p>
     {% endif %}
-
-    <a href="javascript:history.back()" class="back-button">← Geri</a>
 </div>
 
 {% endblock %}
