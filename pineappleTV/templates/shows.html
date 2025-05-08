@@ -1,6 +1,6 @@
 {%extends "layout.html" %}
     {% block content %}
-    <h1>{{ category.capitalize() }}</h1>
+    <h1 class="show-type">{{ category.capitalize() }}</h1>
     
     <div class="video-list">
         {% for show in shows %}
