@@ -111,3 +111,75 @@ class UserManager:
         cursor = self.conn.cursor()
         cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
         return cursor.fetchone()
+    
+class LikeManager:
+    def __init__(self, db_connection):
+        self.conn = db_connection
+
+    def toggle_like(self, username, video_name):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            SELECT state FROM likes
+            WHERE username = ? AND video_name = ?
+        ''', (username, video_name))
+        result = cursor.fetchone()
+
+        if result and result['state'] == 1:
+            # Beğeniyi kaldır
+            cursor.execute('''
+                UPDATE likes
+                SET state = 0
+                WHERE username = ? AND video_name = ?
+            ''', (username, video_name))
+        else:
+            # Beğeniyi ekle veya güncelle
+            cursor.execute('''
+                INSERT INTO likes (username, video_name, state)
+                VALUES (?, ?, 1)
+                ON CONFLICT(username, video_name)
+                DO UPDATE SET state = 1
+            ''', (username, video_name))
+        self.conn.commit()
+
+    def toggle_dislike(self, username, video_name):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            SELECT state FROM likes
+            WHERE username = ? AND video_name = ?
+        ''', (username, video_name))
+        result = cursor.fetchone()
+
+        if result and result['state'] == -1:
+            # Beğenmeyi kaldır
+            cursor.execute('''
+                UPDATE likes
+                SET state = 0
+                WHERE username = ? AND video_name = ?
+            ''', (username, video_name))
+        else:
+            # Beğenmeyi ekle veya güncelle
+            cursor.execute('''
+                INSERT INTO likes (username, video_name, state)
+                VALUES (?, ?, -1)
+                ON CONFLICT(username, video_name)
+                DO UPDATE SET state = -1
+            ''', (username, video_name))
+        self.conn.commit()
+
+    def get_like_count(self, video_name):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            SELECT COUNT(*) as like_count FROM likes
+            WHERE video_name = ? AND state = 1
+        ''', (video_name,))
+        result = cursor.fetchone()
+        return result['like_count']
+
+    def get_dislike_count(self, video_name):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            SELECT COUNT(*) as dislike_count FROM likes
+            WHERE video_name = ? AND state = -1
+        ''', (video_name,))
+        result = cursor.fetchone()
+        return result['dislike_count']
