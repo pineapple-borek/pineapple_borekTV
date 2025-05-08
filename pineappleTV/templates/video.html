@@ -62,17 +62,20 @@
             {% endfor %}
         </ul>
     </div>
-    <a href="javascript:history.back()" class="back-button">← Geri</a>
+    
 </div>
 
 
 
 <style>
+
     .main-content {
+        background-color:rgb(54, 130, 127, 0.65); /* Arka plan rengi */
         display: flex;
         flex-direction: column;
         align-items: center;
         margin-top: 80px;
+        backdrop-filter: blur(10px);
     }
     .video-container {
         display: flex;
@@ -80,7 +83,7 @@
         align-items: center;
         justify-content: center;
         position: relative; /* Added for button positioning */
-        margin-bottom: 20px; /* Add some space below video area */
+        margin: 10% 0% 2% 0%; /* Add some space below video area */
     }
     .video-title {
         font-size: 24px;
@@ -137,7 +140,7 @@
         display: flex;
         justify-content: space-between; /* önceki ve sonraki butonları zıt yönlere iter */
         width: 800px; 
-        margin-top: 15px; 
+        margin-top: 1%; 
     }
     /*buton rengi*/
     .nav-button {
