@@ -329,23 +329,31 @@ def search():
         return redirect(url_for('login'))
 
     query = request.args.get('query', '').lower()
-    search_path = os.path.join('pineappleTV', 'static', 'videos')
+    base_search_path = os.path.join('pineappleTV', 'static', 'videos')
+    categories = ['diziler', 'filmler']
 
     results = []
     try:
-        for filename in os.listdir(search_path):
-            if query in filename.lower() and filename.endswith('.mp4'):
-                base_filename = os.path.splitext(filename)[0]
-                
-                # mp4 ile jpg nin isminin aynı olıp olmadığına bakıyor
-                thumbnail_filename = base_filename + '.jpg'
-                thumbnail_path = os.path.join(search_path, thumbnail_filename)
-                thumbnail = thumbnail_filename
-                
-                results.append({
-                    'name': filename,
-                    'thumbnail': thumbnail
-                })
+        for category in categories:
+            category_path = os.path.join(base_search_path, category)
+            if not os.path.isdir(category_path):
+                continue
+            for item in os.listdir(category_path):
+                item_path = os.path.join(category_path, item)
+                # Only search in directories (shows/movies folders)
+                if os.path.isdir(item_path) and query in item.lower():
+                    thumbnail_filename = 'thumbnail.jpg'
+                    thumbnail_path = os.path.join(item_path, thumbnail_filename)
+                    # For HTML, thumbnail path should be relative to 'static'
+                    if os.path.exists(thumbnail_path):
+                        thumbnail = f'videos/{category}/{item}/thumbnail.jpg'
+                    else:
+                        thumbnail = None
+                    results.append({
+                        'name': item,
+                        'category': category,
+                        'thumbnail': thumbnail
+                    })
     except FileNotFoundError:
         pass
 
