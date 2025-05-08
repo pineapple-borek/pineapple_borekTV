@@ -5,7 +5,8 @@ import os
 import modules
 from modules import DatabaseInitializer
 from modules import db_initializer
-
+from modules import UserManager
+from modules import LikeManager
 
 
 app = Flask(__name__)
@@ -78,7 +79,6 @@ def index():
 # Kullanıcı girişi
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # Eğer kullanıcı zaten giriş yaptıysa ana sayfaya yönlendir
     if 'user' in session:
         return redirect(url_for('index'))
 
@@ -87,21 +87,16 @@ def login():
         password = request.form['password']
 
         conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
-        user = cursor.fetchone()
-        conn.close()
+        user_manager = UserManager(conn)
 
-        if user and check_password_hash(user[2], password):
-            flash('Giriş başarılı!', 'success')
+        if user_manager.login(username, password):
             session['user'] = username
+            flash('Giriş başarılı!', 'success')
             return redirect(url_for('index'))
         else:
             flash('Hatalı kullanıcı adı veya şifre.', 'error')
-            return redirect(url_for('login'))
 
     return render_template('login.html')
-
 
 # Kullanıcı kaydı
 @app.route('/register', methods=['GET', 'POST'])
@@ -367,76 +362,31 @@ def toggle_like_dislike():
     action = request.form['action']  # "like" veya "dislike"
 
     conn = get_db_connection()
-    cursor = conn.cursor()
-
-    # Kullanıcının mevcut beğeni durumunu kontrol et
-    cursor.execute('''
-        SELECT state FROM likes
-        WHERE username = ? AND video_name = ?
-    ''', (username, video_name))
-    result = cursor.fetchone()
+    like_manager = LikeManager(conn)
 
     if action == "like":
-        if result and result['state'] == 1:
-            # Beğeniyi kaldır
-            cursor.execute('''
-                UPDATE likes
-                SET state = 0
-                WHERE username = ? AND video_name = ?
-            ''', (username, video_name))
-        else:
-            # Beğeniyi ekle veya güncelle
-            cursor.execute('''
-                INSERT INTO likes (username, video_name, state)
-                VALUES (?, ?, 1)
-                ON CONFLICT(username, video_name)
-                DO UPDATE SET state = 1
-            ''', (username, video_name))
+        like_manager.toggle_like(username, video_name)
     elif action == "dislike":
-        if result and result['state'] == -1:
-            # Dislike'ı kaldır
-            cursor.execute('''
-                UPDATE likes
-                SET state = 0
-                WHERE username = ? AND video_name = ?
-            ''', (username, video_name))
-        else:
-            # Dislike'ı ekle veya güncelle
-            cursor.execute('''
-                INSERT INTO likes (username, video_name, state)
-                VALUES (?, ?, -1)
-                ON CONFLICT(username, video_name)
-                DO UPDATE SET state = -1
-            ''', (username, video_name))
+        like_manager.toggle_dislike(username, video_name)
 
-    conn.commit()
     conn.close()
-
     return redirect(request.referrer)
 
 #like kontrol
 def get_like_count(video_name):
     conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT COUNT(*) as like_count FROM likes
-        WHERE video_name = ? AND state = 1
-    ''', (video_name,))
-    result = cursor.fetchone()
+    like_manager = LikeManager(conn)
+    like_count = like_manager.get_like_count(video_name)
     conn.close()
-    return result['like_count']
+    return like_count
 
 #dislike kontrol
 def get_dislike_count(video_name):
     conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT COUNT(*) as dislike_count FROM likes
-        WHERE video_name = ? AND state = -1
-    ''', (video_name,))
-    result = cursor.fetchone()
+    like_manager = LikeManager(conn)
+    dislike_count = like_manager.get_dislike_count(video_name)
     conn.close()
-    return result['dislike_count']
+    return dislike_count
 
 # beğeni sayısını gösterme
 def get_like_count(video_name):
