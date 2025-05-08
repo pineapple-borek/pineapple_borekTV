@@ -1,5 +1,6 @@
 import sqlite3
 from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
 import os
 #builder design patterne göre bir sınıf
 class DatabaseInitializer:
@@ -86,3 +87,27 @@ class DatabaseInitializer:
         self.conn.commit()
         self.close_connection()
 db_initializer = DatabaseInitializer()
+
+class UserManager:
+    def __init__(self, db_connection):
+        self.conn = db_connection
+
+    def login(self, username, password):
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
+        user = cursor.fetchone()
+        if user and check_password_hash(user['password'], password):
+            return True
+        return False
+
+    def register(self, username, email, password, card_info):
+        cursor = self.conn.cursor()
+        hashed_password = generate_password_hash(password)
+        cursor.execute('INSERT INTO users (username, email, password, card_info) VALUES (?, ?, ?, ?)', 
+                       (username, email, hashed_password, card_info))
+        self.conn.commit()
+
+    def get_user_info(self, username):
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
+        return cursor.fetchone()

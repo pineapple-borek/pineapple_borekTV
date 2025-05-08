@@ -5,7 +5,7 @@ import os
 import modules
 from modules import DatabaseInitializer
 from modules import db_initializer
-
+from modules import UserManager
 
 
 app = Flask(__name__)
@@ -78,7 +78,6 @@ def index():
 # Kullanıcı girişi
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # Eğer kullanıcı zaten giriş yaptıysa ana sayfaya yönlendir
     if 'user' in session:
         return redirect(url_for('index'))
 
@@ -87,21 +86,16 @@ def login():
         password = request.form['password']
 
         conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
-        user = cursor.fetchone()
-        conn.close()
+        user_manager = UserManager(conn)
 
-        if user and check_password_hash(user[2], password):
-            flash('Giriş başarılı!', 'success')
+        if user_manager.login(username, password):
             session['user'] = username
+            flash('Giriş başarılı!', 'success')
             return redirect(url_for('index'))
         else:
             flash('Hatalı kullanıcı adı veya şifre.', 'error')
-            return redirect(url_for('login'))
 
     return render_template('login.html')
-
 
 # Kullanıcı kaydı
 @app.route('/register', methods=['GET', 'POST'])
