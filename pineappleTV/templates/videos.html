@@ -4,7 +4,6 @@
     
     
     <div class="video-list">
-        <a href="javascript:history.back()" class="back-button">← Geri</a>
         {% for video in videos %}
             <div class="video-item">
                 <a href="{{ url_for('video', name=category+'/'+ video.name) }}">
