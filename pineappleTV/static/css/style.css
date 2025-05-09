@@ -148,10 +148,11 @@ button:hover {
 }
 
 .flash-message {
-    margin: 10px 0;
+    margin: 12px 0;
     padding: 10px;
     background-color: #f4f4f4;
     border-left: 4px solid #ff6600;
+    z-index: 26;
 }
 
 /* Ana Sayfa Butonları */
@@ -164,7 +165,7 @@ button:hover {
 }
 
 .main-button {
-    background-color: var(--blur-color);
+    background-color: var(--button-color);
     backdrop-filter: blur(10px);
     color: white;
     padding: 30px 60px;
