@@ -56,8 +56,11 @@ def redirect_to_main():
 def index():
     if 'user' not in session:
         return redirect(url_for('login'))
+    
 
     username = session['user']
+    if username==None:
+        return redirect(url_for('login'))
     conn = get_db_connection()
     cursor = conn.cursor()
 
