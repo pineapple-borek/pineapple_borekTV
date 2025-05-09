@@ -66,8 +66,8 @@ def index():
     user = cursor.fetchone()
 
     # Kullanıcının favori videolarını alalım
-    cursor.execute('SELECT video_name FROM favorites WHERE username = ?', (username,))
-    favorites = [row['video_name'] for row in cursor.fetchall()]
+    cursor.execute('SELECT show_name FROM favorites WHERE username = ?', (username,))
+    favorites = [row['show_name'] for row in cursor.fetchall()]
 
     conn.close()
 
@@ -273,21 +273,21 @@ def add_to_favorites():
         return redirect(url_for('login'))
 
     username = session['user']
-    video_name = request.form['video_name']
+    show_name = request.form['show_name']
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
     # Kullanıcı favorilerine video ekliyoruz
-    cursor.execute('SELECT * FROM favorites WHERE username = ? AND video_name = ?', (username, video_name))
+    cursor.execute('SELECT * FROM favorites WHERE username = ? AND show_name = ?', (username, show_name))
     existing_favorite = cursor.fetchone()
 
     if not existing_favorite:
-        cursor.execute('INSERT INTO favorites (username, video_name) VALUES (?, ?)', (username, video_name))
+        cursor.execute('INSERT INTO favorites (username, show_name) VALUES (?, ?)', (username, show_name))
         conn.commit()
-        flash(f'{video_name} favorilere eklendi!', 'success')
+        flash(f'{show_name} favorilere eklendi!', 'success')
     else:
-        flash(f'{video_name} zaten favorilerinizde.', 'warning')
+        flash(f'{show_name} zaten favorilerinizde.', 'warning')
 
     conn.close()
 
@@ -302,25 +302,26 @@ def favorite():
     username = session['user']
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT video_name FROM favorites WHERE username = ?', (username,))
+    # Ensure your favorites table has an 'id' column or adjust the query accordingly
+    cursor.execute('SELECT show_category, show_name FROM favorites WHERE username = ?', (username,))
     favorite_videos = cursor.fetchall()
     conn.close()
 
-    favorite_list = [row['video_name'] for row in favorite_videos]
+    favorite_list = [{'show_category': row['show_category'], 'show_name': row['show_name']} for row in favorite_videos]
     return render_template('favorite.html', favorite=favorite_list)
 
-@app.route('/remove_favorite/<video_name>', methods=['POST'])
-def remove_favorite(video_name):
+@app.route('/remove_favorite/<show_name>', methods=['POST'])
+def remove_favorite(show_name):
     if 'user' not in session:
         return redirect(url_for('login'))
 
     username = session['user']
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('DELETE FROM favorites WHERE username = ? AND video_name = ?', (username, video_name))
+    cursor.execute('DELETE FROM favorites WHERE username = ? AND show_name = ?', (username, show_name))
     conn.commit()
     conn.close()
-    flash(f'"{video_name}" favorilerden kaldırıldı.', 'success')
+    flash(f'"{show_name}" favorilerden kaldırıldı.', 'success')
     return redirect(url_for('favorite'))
 
 @app.route('/search')

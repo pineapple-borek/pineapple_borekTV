@@ -5,11 +5,11 @@
     <h2 class="title">Favori Videolarım</h2>
     <div class="video-list">
         {% if favorite %}
-            {% for video in favorite %}
-                {% set thumbnail = video.replace('.mp4', '.jpg') %}
+            {% for show in favorite %}
+            
                 <div class="video-item">
-                    <a href="{{ url_for('video', name=video) }}" class="video-link">
-                        <img src="{{ url_for('static', filename='videos/' + thumbnail) }}" alt="{{ video }}" class="thumbnail">
+                    <a href="{{ url_for('videos', category=show.show_category+'/'+show.show_name ) }}" class="video-link">
+                        <img src="{{ url_for('static', filename='videos/' + show.show_category + '/' + show.show_name + '/thumbnail.jpg') }}" alt="{{ show }}" class="thumbnail">
                         {{ video }}
                     </a>
                     <form action="{{ url_for('remove_favorite', video_name=video) }}" method="POST">

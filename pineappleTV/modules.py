@@ -66,7 +66,8 @@ class DatabaseInitializer:
             CREATE TABLE IF NOT EXISTS favorites (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT,
-                video_name TEXT
+                show_name TEXT,
+                show_category TEXT
             )
         ''')
     #adım adım ayrılmış fonksiyonların beraber bulunduğu fonksiyon. Bir nevi builder metodu

@@ -10,12 +10,7 @@
                     <img src="{{url_for('static',filename='/videos/'+category+'/thumbnail.jpg/')}}" alt="{{ video.name }}">   
                     <p>{{ video.name[0:-3]+" Bölüm" }}</p>
                 </a>
-                
-                <!-- Favorilere Ekle Butonu -->
-                <form action="{{ url_for('add_to_favorites') }}" method="POST">
-                    <input type="hidden" name="video_name" value="{{ video.name }}">
-                    <button type="submit" class="add-to-favorites-btn">Favorilere Ekle</button>
-                </form>
+              
             </div>
         {% endfor %}
     </div>
