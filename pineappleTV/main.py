@@ -65,13 +65,16 @@ def index():
     cursor.execute('SELECT username, subscription_end_date FROM users WHERE username = ?', (username,))
     user = cursor.fetchone()
 
-    # Kullanıcının favori videolarını alalım
+    # Kullanıcının favori videolarını alalım. tabledan show_category'i ve show_name'i çeker
+   #bu bilgileri bir dict içine koyuyoruz
     cursor.execute('SELECT show_name FROM favorites WHERE username = ?', (username,))
     favorites = [row['show_name'] for row in cursor.fetchall()]
 
     conn.close()
+    
 
     # Kullanıcı adı ve abonelik bitiş tarihini HTML'e gönderiyoruz
+    #favorites dicti değişken olarak indexe yollanıyor. indexte favorites butonu bu dicti kullanıyor
     return render_template('index.html', username=user['username'], subscription_end_date=user['subscription_end_date'], favorites=favorites)
 
 
@@ -274,23 +277,30 @@ def add_to_favorites():
 
     username = session['user']
     show_name = request.form['show_name']
+    show_category = request.form.get('show_category') # Get show_category from form
+
+    if not show_category:
+        flash('Kategori bilgisi belirtilmedi.', 'error')
+        return redirect(request.referrer or url_for('index'))
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Kullanıcı favorilerine video ekliyoruz
-    cursor.execute('SELECT * FROM favorites WHERE username = ? AND show_name = ?', (username, show_name))
+    # Check if this specific show in this category is already a favorite
+    cursor.execute('SELECT * FROM favorites WHERE username = ? AND show_name = ? AND show_category = ?',
+                   (username, show_name, show_category))
     existing_favorite = cursor.fetchone()
 
     if not existing_favorite:
-        cursor.execute('INSERT INTO favorites (username, show_name) VALUES (?, ?)', (username, show_name))
+        # Add show_category to the INSERT statement
+        cursor.execute('INSERT INTO favorites (username, show_name, show_category) VALUES (?, ?, ?)',
+                       (username, show_name, show_category))
         conn.commit()
-        flash(f'{show_name} favorilere eklendi!', 'success')
+        flash(f'{show_name} ({show_category}) favorilere eklendi!', 'success')
     else:
-        flash(f'{show_name} zaten favorilerinizde.', 'warning')
+        flash(f'{show_name} ({show_category}) zaten favorilerinizde.', 'warning')
 
     conn.close()
-
     return redirect(request.referrer)
 
 
@@ -302,26 +312,35 @@ def favorite():
     username = session['user']
     conn = get_db_connection()
     cursor = conn.cursor()
-    # Ensure your favorites table has an 'id' column or adjust the query accordingly
+    # Ensure your favorites table has an 'show_category' column or adjust the query accordingly
+    # Fetches show_category and show_name
     cursor.execute('SELECT show_category, show_name FROM favorites WHERE username = ?', (username,))
-    favorite_videos = cursor.fetchall()
+    favorite_videos_rows = cursor.fetchall()
     conn.close()
 
-    favorite_list = [{'show_category': row['show_category'], 'show_name': row['show_name']} for row in favorite_videos]
+    favorite_list = []
+    for row in favorite_videos_rows:
+        # Replace None category with an empty string for safer template rendering
+        category = row['show_category'] if row['show_category'] is not None else ""
+        favorite_list.append({'show_category': category, 'show_name': row['show_name']})
+    
     return render_template('favorite.html', favorite=favorite_list)
 
-@app.route('/remove_favorite/<show_name>', methods=['POST'])
-def remove_favorite(show_name):
+# Changed route to include category for unique identification
+@app.route('/remove_favorite/<category>/<path:show_name>', methods=['POST'])
+def remove_favorite(category, show_name): # Parameters from URL
     if 'user' not in session:
         return redirect(url_for('login'))
 
     username = session['user']
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('DELETE FROM favorites WHERE username = ? AND show_name = ?', (username, show_name))
+    # Delete based on username, show_name, AND category
+    cursor.execute('DELETE FROM favorites WHERE username = ? AND show_name = ? AND show_category = ?',
+                   (username, show_name, category))
     conn.commit()
     conn.close()
-    flash(f'"{show_name}" favorilerden kaldırıldı.', 'success')
+    flash(f'"{show_name}" ({category}) favorilerden kaldırıldı.', 'success')
     return redirect(url_for('favorite'))
 
 @app.route('/search')

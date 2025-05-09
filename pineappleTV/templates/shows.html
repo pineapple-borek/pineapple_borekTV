@@ -9,6 +9,7 @@
                     <img class="thumbnail" src="{{ url_for('static', filename='videos/' + category + '/' + show.name + '/thumbnail.jpg') }}" alt="{{ show.name }}"> 
                     <p>{{ show.name }}</p>
                     <!-- Favorilere Ekle Butonu -->
+                    <!-- favoriye eklenen şovun category değerini ve show_name değerini alıyor ve backende form gönderiyor-->
                 <form action="{{ url_for('add_to_favorites') }}" method="POST">
                     <input type="hidden" name="show_name" value="{{ show.name }}">
                     <input type="hidden" name="show_category" value="{{ category }}">

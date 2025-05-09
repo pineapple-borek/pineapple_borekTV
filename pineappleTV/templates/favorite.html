@@ -4,15 +4,16 @@
 <div class="main-content">
     <h2 class="title">Favori Videolarım</h2>
     <div class="video-list">
+        <!-- favorite diye bir değişken varsa bu dict'in her bir indisi için aşağıdaki işlemleri yapıyor-->
         {% if favorite %}
             {% for show in favorite %}
             
                 <div class="video-item">
                     <a href="{{ url_for('videos', category=show.show_category+'/'+show.show_name ) }}" class="video-link">
                         <img src="{{ url_for('static', filename='videos/' + show.show_category + '/' + show.show_name + '/thumbnail.jpg') }}" alt="{{ show }}" class="thumbnail">
-                        {{ video }}
+                        {{ show.show_name }}
                     </a>
-                    <form action="{{ url_for('remove_favorite', video_name=video) }}" method="POST">
+                    <form action="{{ url_for('remove_favorite', category=show.show_category,show_name=show.show_name) }}" method="POST">
                         <button type="submit" class="remove-favorite-btn">Favorilerden Kaldır</button>
                     </form>
                 </div>
@@ -21,6 +22,6 @@
             <p class="no-favorites">Henüz hiç favori eklenmedi.</p>
         {% endif %}
     </div>
-    <a href="javascript:history.back()" class="back-button">← Geri</a>
+   
 </div>
 {% endblock %}
