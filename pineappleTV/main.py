@@ -395,20 +395,6 @@ def get_dislike_count(video_name):
     conn.close()
     return dislike_count
 
-# beğeni sayısını gösterme
-def get_like_count(video_name):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT COUNT(*) as like_count FROM likes
-        WHERE video_name = ? AND state = 1
-    ''', (video_name,))
-    result = cursor.fetchone()
-    conn.close()
-    return result['like_count']
-
-
-
 if __name__ == '__main__':
     # Uygulama başlatılmadan önce veritabanı şemasını kontrol ediyoruz 
     check_db()

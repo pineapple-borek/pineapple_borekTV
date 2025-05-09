@@ -69,16 +69,6 @@ class DatabaseInitializer:
                 video_name TEXT
             )
         ''')
-    
-    
-        #favori tablosu oluşturma
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS favorites (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT,
-                video_name TEXT
-            )
-        ''')
     #adım adım ayrılmış fonksiyonların beraber bulunduğu fonksiyon. Bir nevi builder metodu
     def initialize_database(self):
         self.create_db_directory()
