@@ -56,8 +56,11 @@ def redirect_to_main():
 def index():
     if 'user' not in session:
         return redirect(url_for('login'))
-
+    
     username = session['user']
+    if username is None:
+        return redirect(url_for('login'))
+    
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -65,16 +68,20 @@ def index():
     cursor.execute('SELECT username, subscription_end_date FROM users WHERE username = ?', (username,))
     user = cursor.fetchone()
 
-    # Kullanıcının favori videolarını alalım. tabledan show_category'i ve show_name'i çeker
-   #bu bilgileri bir dict içine koyuyoruz
+    # Eğer kullanıcı veritabanında yoksa oturumu sonlandır ve giriş sayfasına yönlendir
+    if user is None:
+        session.pop('user', None)
+        flash('Kullanıcı bulunamadı. Lütfen tekrar giriş yapın.', 'error')
+        conn.close()
+        return redirect(url_for('login'))
+
+    # Kullanıcının favori videolarını alalım
     cursor.execute('SELECT show_name FROM favorites WHERE username = ?', (username,))
     favorites = [row['show_name'] for row in cursor.fetchall()]
 
     conn.close()
-    
 
     # Kullanıcı adı ve abonelik bitiş tarihini HTML'e gönderiyoruz
-    #favorites dicti değişken olarak indexe yollanıyor. indexte favorites butonu bu dicti kullanıyor
     return render_template('index.html', username=user['username'], subscription_end_date=user['subscription_end_date'], favorites=favorites)
 
 
@@ -88,16 +95,46 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        conn = None  # Initialize conn to None
 
-        conn = get_db_connection()
-        user_manager = UserManager(conn)
+        try:
+            conn = get_db_connection()
+            user_manager = UserManager(conn)
 
-        if user_manager.login(username, password):
-            session['user'] = username
-            flash('Giriş başarılı!', 'success')
-            return redirect(url_for('index'))
-        else:
-            flash('Hatalı kullanıcı adı veya şifre.', 'error')
+            if user_manager.login(username, password):
+                # Primary authentication by UserManager successful.
+                # Now, explicitly verify the user record exists directly in the database.
+                cursor = conn.cursor()
+                cursor.execute("SELECT username FROM users WHERE username = ?", (username,))
+                user_record = cursor.fetchone()
+
+                if user_record:
+                    # User record confirmed in the database
+                    session['user'] = username
+                    flash('Giriş başarılı!', 'success')
+                    return redirect(url_for('index'))
+                else:
+                    # This case implies UserManager authenticated, but a direct DB lookup failed.
+                    # This could indicate an inconsistency or an edge case.
+                    flash('Kullanıcı doğrulama başarılı oldu ancak kullanıcı kaydı bulunamadı. Lütfen tekrar deneyin veya yöneticiye bildirin.', 'error')
+            else:
+                # UserManager.login returned False (invalid credentials or user not found by UserManager)
+                flash('Hatalı kullanıcı adı veya şifre.', 'error')
+        
+        except sqlite3.Error as e:
+            # Log or handle database-specific errors
+            # For example: app.logger.error(f"Database error during login: {e}")
+            flash('Giriş sırasında bir veritabanı hatası oluştu. Lütfen tekrar deneyin.', 'error')
+        except Exception as e:
+            # Log or handle other generic exceptions
+            # For example: app.logger.error(f"Unexpected error during login: {e}")
+            flash('Giriş sırasında beklenmedik bir hata oluştu. Lütfen tekrar deneyin.', 'error')
+        finally:
+            if conn:
+                conn.close()
+        
+        # If login was not successful (due to bad credentials, user not found post-auth, or an exception),
+        # control will fall through here, and the login page will be re-rendered with the flashed message.
 
     return render_template('login.html')
 
