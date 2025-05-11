@@ -95,49 +95,46 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        conn = None  # Initialize conn to None
+        conn = None  # conn değişkenini None olarak başlatıyoruz
 
         try:
             conn = get_db_connection()
             user_manager = UserManager(conn)
 
             if user_manager.login(username, password):
-                # Primary authentication by UserManager successful.
-                # Now, explicitly verify the user record exists directly in the database.
+                # Burda kullanıcı kaydının doğrudan veritabanında var olduğunu doğruluyoruz
                 cursor = conn.cursor()
                 cursor.execute("SELECT username FROM users WHERE username = ?", (username,))
                 user_record = cursor.fetchone()
 
                 if user_record:
-                    # User record confirmed in the database
+                    # Kullanıcı kaydı veritabanında doğrulanirsa
                     session['user'] = username
                     flash('Giriş başarılı!', 'success')
                     return redirect(url_for('index'))
                 else:
-                    # This case implies UserManager authenticated, but a direct DB lookup failed.
-                    # This could indicate an inconsistency or an edge case.
+                    # Kullanıcı kaydı veritabanında bulunmassa
                     flash('Kullanıcı doğrulama başarılı oldu ancak kullanıcı kaydı bulunamadı. Lütfen tekrar deneyin veya yöneticiye bildirin.', 'error')
             else:
-                # UserManager.login returned False (invalid credentials or user not found by UserManager)
+                # UserManager.login False döndürürse (geçersiz kimlik bilgileri veya UserManager tarafından kullanıcı bulunamadı)
                 flash('Hatalı kullanıcı adı veya şifre.', 'error')
         
         except sqlite3.Error as e:
-            # Log or handle database-specific errors
-            # For example: app.logger.error(f"Database error during login: {e}")
+            # Veritabanına özgü hatalar
+            # Örneğin: app.logger.error(f"Giriş sırasında veritabanı hatası: {e}")
             flash('Giriş sırasında bir veritabanı hatası oluştu. Lütfen tekrar deneyin.', 'error')
         except Exception as e:
-            # Log or handle other generic exceptions
-            # For example: app.logger.error(f"Unexpected error during login: {e}")
+            # Diğer genel istisnalar
+            # Örneğin: app.logger.error(f"Giriş sırasında beklenmedik hata: {e}")
             flash('Giriş sırasında beklenmedik bir hata oluştu. Lütfen tekrar deneyin.', 'error')
         finally:
             if conn:
                 conn.close()
-        
-        # If login was not successful (due to bad credentials, user not found post-auth, or an exception),
-        # control will fall through here, and the login page will be re-rendered with the flashed message.
+    
+        # Giriş başarılı olmadıysa (kötü kimlik bilgileri, kullanıcı bulunamadı veya bir istisna nedeniyle),
+        # kontrol buraya düşer ve giriş sayfası flaş mesajıyla yeniden işlenir.
 
     return render_template('login.html')
-
 # Kullanıcı kaydı
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -221,42 +218,42 @@ def videos(category):
 # Video izleme sayfası
 @app.route('/video/<path:name>', methods=['GET', 'POST'])
 def video(name):
-    #video dosya isimleri 1.mp4, 2.mp4 gibi isimlendirilmelidir.
+    # Video dosya isimleri 1.mp4, 2.mp4 gibi isimlendirilmelidir.
     if 'user' not in session:
         return redirect(url_for('login'))
 
-    # Extract directory and filename
+    # Dosya adını ayıkla
     video_dir_relative = os.path.dirname(name) # e.g., diziler/Flash
     video_filename = os.path.basename(name) # e.g., 1.mp4
-    video_dir_absolute = os.path.join('pineappleTV', 'static', 'videos', video_dir_relative) # Absolute path to the directory
+    video_dir_absolute = os.path.join('pineappleTV', 'static', 'videos', video_dir_relative)
 
     prev_video = None
     next_video = None
 
     try:
-        # List all mp4 files in the directory
+        # Tüm mp4 dosyalarını listele
         all_videos = sorted(
             [f for f in os.listdir(video_dir_absolute) if f.endswith('.mp4')],
-            key=lambda x: int(os.path.splitext(x)[0]) # Sort numerically based on filename (e.g., 1, 2, 10)
+            key=lambda x: int(os.path.splitext(x)[0]) # Dosya adlarına göre sayısal olarak sırala (örn. 1, 2, 10)
         )
 
-        # Find the index of the current video
+        # Mevcut videonun dizin içindeki sırasını bul
         current_index = all_videos.index(video_filename)
 
-        # Determine previous video
+        # Önceki videoyu belirle
         if current_index > 0:
             prev_filename = all_videos[current_index - 1]
-            prev_video = os.path.join(video_dir_relative, prev_filename).replace('\\', '/') # Use relative path for URL
-
-        # Determine next video
+            prev_video = os.path.join(video_dir_relative, prev_filename).replace('\\', '/') 
+  
+        # Sonraki videoyu belirle
         if current_index < len(all_videos) - 1:
             next_filename = all_videos[current_index + 1]
-            next_video = os.path.join(video_dir_relative, next_filename).replace('\\', '/') # Use relative path for URL
+            next_video = os.path.join(video_dir_relative, next_filename).replace('\\', '/') 
 
     except (FileNotFoundError, ValueError, IndexError) as e:
-        # Handle cases where directory doesn't exist, filename isn't numeric, or video not found
+        # Dizin yoksa, dosya adı sayısal değilse veya video bulunamazsa oluşacak hataları ele al
         print(f"Error finding next/prev video: {e}")
-        pass # Keep prev_video and next_video as None
+        pass #prev_video ve next_video'yu None olarak bırak
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -314,7 +311,7 @@ def add_to_favorites():
 
     username = session['user']
     show_name = request.form['show_name']
-    show_category = request.form.get('show_category') # Get show_category from form
+    show_category = request.form.get('show_category') # Formdan show_category bilgisini al
 
     if not show_category:
         flash('Kategori bilgisi belirtilmedi.', 'error')
@@ -323,13 +320,13 @@ def add_to_favorites():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Check if this specific show in this category is already a favorite
+    # Bu kategorideki bu dizi/dizi ismi zaten favorilerde mi kontrol et
     cursor.execute('SELECT * FROM favorites WHERE username = ? AND show_name = ? AND show_category = ?',
                    (username, show_name, show_category))
     existing_favorite = cursor.fetchone()
 
     if not existing_favorite:
-        # Add show_category to the INSERT statement
+        # INSERT sorgusuna show_category bilgisini ekle
         cursor.execute('INSERT INTO favorites (username, show_name, show_category) VALUES (?, ?, ?)',
                        (username, show_name, show_category))
         conn.commit()
@@ -349,30 +346,30 @@ def favorite():
     username = session['user']
     conn = get_db_connection()
     cursor = conn.cursor()
-    # Ensure your favorites table has an 'show_category' column or adjust the query accordingly
-    # Fetches show_category and show_name
+    # Favoriler tablonuzda 'show_category' sütunu olduğundan emin olun ya da sorguyu buna göre ayarlayın
+    # show_category ve show_name verilerini getirir
     cursor.execute('SELECT show_category, show_name FROM favorites WHERE username = ?', (username,))
     favorite_videos_rows = cursor.fetchall()
     conn.close()
 
     favorite_list = []
     for row in favorite_videos_rows:
-        # Replace None category with an empty string for safer template rendering
+        # Şablonda güvenli render için None olan kategoriyi boş string ile değiştir
         category = row['show_category'] if row['show_category'] is not None else ""
         favorite_list.append({'show_category': category, 'show_name': row['show_name']})
     
     return render_template('favorite.html', favorite=favorite_list)
 
-# Changed route to include category for unique identification
+# Tekil tanımlama için route'a kategori eklendi
 @app.route('/remove_favorite/<category>/<path:show_name>', methods=['POST'])
-def remove_favorite(category, show_name): # Parameters from URL
+def remove_favorite(category, show_name): # Parametreler URL'den alınır
     if 'user' not in session:
         return redirect(url_for('login'))
 
     username = session['user']
     conn = get_db_connection()
     cursor = conn.cursor()
-    # Delete based on username, show_name, AND category
+    # Kullanıcı adı, dizi adı VE kategoriye göre silme işlemi
     cursor.execute('DELETE FROM favorites WHERE username = ? AND show_name = ? AND show_category = ?',
                    (username, show_name, category))
     conn.commit()
@@ -436,7 +433,7 @@ def toggle_like_dislike():
     conn.close()
     return redirect(request.referrer)
 
-#like kontrol
+# Like kontrol
 def get_like_count(video_name):
     conn = get_db_connection()
     like_manager = LikeManager(conn)
@@ -444,7 +441,7 @@ def get_like_count(video_name):
     conn.close()
     return like_count
 
-#dislike kontrol
+# Dislike kontrol
 def get_dislike_count(video_name):
     conn = get_db_connection()
     like_manager = LikeManager(conn)
