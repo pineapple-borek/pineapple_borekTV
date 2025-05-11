@@ -1,68 +1,35 @@
 {%extends "layout.html" %}
-    {% block content %}
-    <h1 class="show-type">{{ category.capitalize() }}</h1>
-    
-    <div class="video-list">
-        {% for show in shows %}
-            <div class="video-item">
-                <a href="{{ url_for('videos', category=category+'/'+show.name ) }}">
-                    <img class="thumbnail" src="{{ url_for('static', filename='videos/' + category + '/' + show.name + '/thumbnail.jpg') }}" alt="{{ show.name }}"> 
-                    <p>{{ show.name }}</p>
-                    <!-- Favorilere Ekle Butonu -->
-                    <!-- favoriye eklenen şovun category değerini ve show_name değerini alıyor ve backende form gönderiyor-->
-                <form action="{{ url_for('add_to_favorites') }}" method="POST">
-                    <input type="hidden" name="show_name" value="{{ show.name }}">
-                    <input type="hidden" name="show_category" value="{{ category }}">
-                    <button type="submit" class="add-to-favorites-btn">Favorilere Ekle</button>
-                </form>
-                </a>
-                                  
-            </div>
-        {% endfor %}
+{% block content %}
+<h1 class="show-type">{{ category.capitalize() }}</h1>
+
+<div class="video-list">
+    {% for show in shows %}
+    <div class="video-item">
+        <a href="{{ url_for('videos', category=category+'/'+show.name ) }}">
+            <img class="thumbnail"
+                src="{{ url_for('static', filename='videos/' + category + '/' + show.name + '/thumbnail.jpg') }}"
+                alt="{{ show.name }}">
+            <p>{{ show.name }}</p>
+            <!-- Favorilere Ekle Butonu -->
+            <!-- favoriye eklenen şovun category değerini ve show_name değerini alıyor ve backende form gönderiyor-->
+            <form action="{{ url_for('add_to_favorites') }}" method="POST">
+                <input type="hidden" name="show_name" value="{{ show.name }}">
+                <input type="hidden" name="show_category" value="{{ category }}">
+                <button type="submit" class="add-to-favorites-btn">Favorilere Ekle</button>
+            </form>
+        </a>
+
     </div>
+    {% endfor %}
+</div>
 
-    <style>
-        /*.video-list {
-            display: flex;
-            flex-wrap: wrap;
-         justify-content: flex-start;
-            gap: 20px;
-         padding: 20px;
-        }*/
-
-        
-
-        /*.video-item img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-    }*/
+<style>
     main {
-    display: block;
-    justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 100px);
-    padding: 20px;}
-
-    .main-content {
         display: block;
-        flex-direction: column;
+        justify-content: center;
         align-items: center;
-        margin-top: 80px;}
-        
-        .add-to-favorites-btn {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        
-        .add-to-favorites-btn:hover {
-            background-color: #2980b9;
-        }
-    </style>
-    {% endblock %}
+        min-height: calc(100vh - 100px);
+        padding: 20px;
+    }
+</style>
+{% endblock %}
