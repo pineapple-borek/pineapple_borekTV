@@ -393,7 +393,7 @@ input#search-bar:focus::placeholder {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     gap: 15px;
     padding: 20px;
-    padding-bottom: 0px;
+    padding-bottom: 70px;
     text-align: center;
     transition: transform 0.3s ease;
     display: flex;
