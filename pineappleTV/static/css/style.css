@@ -8,7 +8,7 @@
     /* İkinci renk */
     --background-color: #f5eded;
     /* Arka plan rengi */
-    --text-color: #333333;
+    --text-color: #f5eded;
     /* Yazı rengi */
     --highlight-color: #ccb359;
     /* Vurgulu renk */
@@ -372,6 +372,7 @@ input#search-bar:focus::placeholder {
 
 /* Video Listesi */
 .video-list {
+    color: #f5eded;
     justify-self: center;
     background-color: #25595880;
     backdrop-filter: blur(8px);
@@ -446,7 +447,7 @@ input#search-bar:focus::placeholder {
 
 .no-favorites {
     font-size: 16px;
-    color: #7f8c8d;
+    color: var(--text-color);
     margin-top: 20px;
     text-align: center;
 }
