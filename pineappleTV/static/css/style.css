@@ -393,7 +393,7 @@ input#search-bar:focus::placeholder {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     gap: 15px;
     padding: 20px;
-    padding-bottom: 0px;
+    padding-bottom: 70px;
     text-align: center;
     transition: transform 0.3s ease;
     display: flex;
@@ -407,8 +407,6 @@ input#search-bar:focus::placeholder {
 .thumbnail {
 
     object-fit: cover;
-
-
     width: 100%;
     height: auto;
     border-radius: 8px;
@@ -439,6 +437,7 @@ input#search-bar:focus::placeholder {
     cursor: pointer;
     transition: background-color 0.3s ease;
     font-size: 14px;
+    margin-bottom: -70px;
 }
 
 .remove-favorite-btn:hover {
