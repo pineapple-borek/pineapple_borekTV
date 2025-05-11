@@ -473,13 +473,18 @@ main {
 
 .search-result {
     display: block; /* or flex if you want to center content inside */
-    margin-top: 120px; /* Leaves space below header */
+    margin-top: 75px; /* Leaves space below header */
     margin-left: auto;
     margin-right: auto;
-    background-color: var(--blur-color);
-    backdrop-filter: blur(8px);
     padding: 25px;
     border-radius: 12px;
+}
+
+.search-result h2 {
+    padding: 20px;
+    background-color: #25595880;
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
 }
 
 .title {
